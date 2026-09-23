@@ -483,6 +483,7 @@ function editLink(i){
  l.icon=icon.trim()||"✦";
  l.image=image.trim();
  saveState();
+ cloudSave(false);
  renderEditors();
  render();
 }
@@ -497,7 +498,7 @@ function showLinkMenu(i){
  else if(action==="3"){
    if(confirm(`Delete "${l.title}"?`)){
      state.links.splice(i,1);
-     saveState(); renderEditors(); render();
+     saveState(); cloudSave(false); renderEditors(); render();
    }
  }
 }
@@ -513,7 +514,7 @@ function renderEditors(){
   row.querySelector(".open").onclick=()=>openLink(l.url);
   row.querySelector(".del").onclick=()=>{
     if(confirm(`Delete "${l.title}"?`)){
-      state.links.splice(i,1);saveState();renderEditors();render();
+      state.links.splice(i,1);saveState();cloudSave(false);renderEditors();render();
     }
   };
   box.appendChild(row);
@@ -525,11 +526,12 @@ $$(".nav button").forEach(b=>b.onclick=()=>{
  $("#pageTitle").textContent=b.textContent.trim();
 });
 ["name","username","bio"].forEach(id=>$("#"+id).addEventListener("input",()=>{render()}));
-$("#saveProfileBtn").onclick=()=>{
+$("#saveProfileBtn").onclick=async()=>{
   state.name=$("#name").value.trim()||"Mofaarah";
   state.username=$("#username").value.trim().replace(/^@/,"").replace(/\s+/g,"-").toLowerCase()||"mofaarah";
   state.bio=$("#bio").value.trim();
   saveState();
+  await cloudSave(true);
   render();
   alert("Profile saved successfully!");
 };
@@ -543,7 +545,7 @@ $("#avatar").addEventListener("change",e=>{
     const c=document.createElement("canvas"); c.width=Math.max(1,Math.round(img.width*scale)); c.height=Math.max(1,Math.round(img.height*scale));
     const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,c.width,c.height);
     const compact=c.toDataURL("image/jpeg",0.72);
-    $("#pAvatar").innerHTML=`<img src="${compact}" alt="">`;state.avatar=compact;saveState();render();
+    $("#pAvatar").innerHTML=`<img src="${compact}" alt="">`;state.avatar=compact;saveState();cloudSave(false);render();
   };
   img.src=r.result;
 };r.readAsDataURL(f);
@@ -560,7 +562,7 @@ $("#addLink").onclick=()=>{
  if(!url)return;
  const safe=normalizeUrl(url);
  if(!safe){alert("URL-ka sax ma aha.");return;}
- state.links.push({title,desc,icon,url:safe,image});saveState();renderEditors();render();
+ state.links.push({title,desc,icon,url:safe,image});saveState();cloudSave(false);renderEditors();render();
 };
 const themes={
  purple:["#a855f7","#ec4899"],ocean:["#06b6d4","#3b82f6"],lime:["#84cc16","#22c55e"],sunset:["#f97316","#ef4444"],ice:["#e0e7ff","#38bdf8"]
@@ -577,101 +579,96 @@ $("#device").onchange=e=>{$(".iphone").style.height=e.target.value.includes("15"
 $("#applySocial").onclick=()=>{
  const vals=$$(".socialInput").map(x=>x.value);$("#socials").innerHTML=vals.map(v=>`<div class="social">${v||"•"}</div>`).join("");
 };
-function encodeProfileData(obj){return btoa(unescape(encodeURIComponent(JSON.stringify(obj))))}
-function decodeProfileData(str){try{return JSON.parse(decodeURIComponent(escape(atob(str))))}catch{return null}}
+const API_BASE = "";
+function getCreatorToken(){
+  let token=localStorage.getItem("biospace_creator_token");
+  if(!token){
+    const bytes=new Uint8Array(24); crypto.getRandomValues(bytes);
+    token=Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
+    localStorage.setItem("biospace_creator_token",token);
+  }
+  return token;
+}
+function profilePayload(){
+  saveState();
+  return {
+    name:state.name||"Mofaarah",
+    username:(state.username||"mofaarah").replace(/^@/,""),
+    bio:state.bio||"",
+    avatar:state.avatar||"",
+    links:Array.isArray(state.links)?state.links.map(l=>({title:l.title||"Link",desc:l.desc||"",icon:l.icon||"✦",url:l.url||"",image:l.image||""})):[],
+    design:{accent:state.accent||"#8b5cf6",accent2:state.accent2||"#ec4899"}
+  };
+}
+async function cloudSave(showError=false){
+  const payload=profilePayload();
+  try{
+    const res=await fetch(`${API_BASE}/api/profile`,{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({token:getCreatorToken(),profile:payload})
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error||"Cloud save failed");
+    localStorage.setItem("biospace_cloud_username",payload.username);
+    return data;
+  }catch(err){
+    if(showError) alert("Online save failed. Your changes are still saved on this iPhone.\n\n"+err.message);
+    return null;
+  }
+}
 function publicProfileUrl(){
- saveState();
- const payload={name:state.name||"Mofaarah",username:state.username||"mofaarah",bio:state.bio||"",avatar:state.avatar||"",links:Array.isArray(state.links)?state.links.map(l=>({title:l.title||"Link",desc:l.desc||"",icon:l.icon||"✦",url:l.url||"",image:l.image||""})):[]};
- const username=encodeURIComponent(state.username||"mofaarah");
- const base=window.location.href.split("?")[0].split("#")[0];
- return `${base}?profile=${username}#data=${encodeProfileData(payload)}`;
+  const username=encodeURIComponent((state.username||"mofaarah").replace(/^@/,""));
+  return `${window.location.href.split("?")[0].split("#")[0]}?profile=${username}`;
 }
 $("#shareBtn").onclick=async()=>{
- // Save the current Studio state, including all links, before sharing.
- saveState();
- const url=publicProfileUrl();
- try{
-   await navigator.clipboard.writeText(url);
-   alert("Profile link copied!\n\n"+url);
- }catch{
-   prompt("Copy your profile link:",url);
- }
+  saveState();
+  const saved=await cloudSave(true);
+  if(!saved)return;
+  const url=publicProfileUrl();
+  try{
+    await navigator.clipboard.writeText(url);
+    alert("Profile link copied!\n\n"+url+"\n\nThis same link will show your latest saved profile.");
+  }catch{prompt("Copy your profile link:",url)}
 };
 
-function publicMode(){
+async function loadPublicProfile(username){
+  try{
+    const res=await fetch(`${API_BASE}/api/profile?username=${encodeURIComponent(username)}`,{cache:"no-store"});
+    if(!res.ok) return null;
+    return await res.json();
+  }catch{return null}
+}
+async function publicMode(){
  const params=new URLSearchParams(window.location.search);
  if(!params.get("profile"))return;
-
  document.body.classList.add("public-profile-mode");
-
- const hash=new URLSearchParams(window.location.hash.replace(/^#/,""));
- const sharedData=hash.get("data")?decodeProfileData(hash.get("data")):null;
- const savedProfile=sharedData||JSON.parse(localStorage.getItem("biospace_iphone_studio")||"null");
- if(!savedProfile)return;
-
- const name=savedProfile.name||"Mofaarah";
- const username=savedProfile.username||params.get("profile");
- const bio=savedProfile.bio||"";
- const defaultPublicLinks=[
-   {title:"TikTok",desc:"Follow me on TikTok",icon:"♪",url:"https://www.tiktok.com/",image:""},
-   {title:"Instagram",desc:"My latest photos",icon:"◎",url:"https://www.instagram.com/",image:""},
-   {title:"YouTube",desc:"Watch my videos",icon:"▶",url:"https://www.youtube.com/",image:""},
-   {title:"Snapchat",desc:"Add me on Snapchat",icon:"👻",url:"https://www.snapchat.com/",image:""},
-   {title:"Discord",desc:"Join my community",icon:"◇",url:"https://discord.com/",image:""}
- ];
- const links=(Array.isArray(savedProfile.links)&&savedProfile.links.length)
-   ? savedProfile.links
-   : defaultPublicLinks;
-
- $("#publicName").textContent=name+" ✦";
- $("#publicHandle").textContent="@"+String(username).replace(/^@/,"");
- $("#publicBio").textContent=bio;
-
- const avatar=$("#publicAvatar");
- if(savedProfile.avatar){
-   avatar.innerHTML=`<img src="${savedProfile.avatar}" alt="">`;
- }else{
-   avatar.textContent=(name.trim()[0]||"M").toUpperCase();
+ const username=params.get("profile");
+ let savedProfile=await loadPublicProfile(username);
+ if(!savedProfile){
+   const saved=JSON.parse(localStorage.getItem("biospace_iphone_studio")||"null");
+   savedProfile=saved;
  }
-
- const socials=$("#publicSocials");
- socials.innerHTML="";
- const socialItems=[
-   {icon:"◎",label:"Instagram",url:"https://www.instagram.com/"},
-   {icon:"♪",label:"TikTok",url:"https://www.tiktok.com/"},
-   {icon:"▶",label:"YouTube",url:"https://www.youtube.com/"},
-   {icon:"◇",label:"Discord",url:"https://discord.com/"},
-   {icon:"✦",label:"Website",url:"https://www.google.com/"}
- ];
- socialItems.forEach(item=>{
-   const b=document.createElement("a");
-   b.className="publicSocial";
-   b.href=item.url;
-   b.target="_blank";
-   b.rel="noopener noreferrer";
-   b.title=item.label;
-   b.setAttribute("aria-label",item.label);
-   b.textContent=item.icon;
-   socials.appendChild(b);
- });
-
- const box=$("#publicLinks");
- box.innerHTML="";
- links.forEach(l=>{
-   const a=document.createElement("a");
-   a.className="publicLink";
-   a.href=normalizeUrl(l.url)||"#";
-   a.target="_blank";
-   a.rel="noopener noreferrer";
-   a.innerHTML=`
-     <div class="publicLinkPic">${l.image?`<img src="${escapeHtml(l.image)}" alt="">`:escapeHtml(l.icon||"✦")}</div>
-     <div class="publicLinkCopy">
-       <strong>${escapeHtml(l.title||"Untitled Link")}</strong>
-       <small>${escapeHtml(l.desc||"")}</small>
-     </div>
-     <div class="publicDots">•••</div>`;
-   box.appendChild(a);
- });
+ if(!savedProfile)return;
+ const name=savedProfile.name||"Mofaarah";
+ const user=savedProfile.username||username;
+ const bio=savedProfile.bio||"";
+ const links=(Array.isArray(savedProfile.links)&&savedProfile.links.length)?savedProfile.links:[];
+ $("#publicName").textContent=name+" ✦";
+ $("#publicHandle").textContent="@"+String(user).replace(/^@/,"");
+ $("#publicBio").textContent=bio;
+ const avatar=$("#publicAvatar");
+ if(savedProfile.avatar) avatar.innerHTML=`<img src="${escapeHtml(savedProfile.avatar)}" alt="">`;
+ else avatar.textContent=(name.trim()[0]||"M").toUpperCase();
+ const socials=$("#publicSocials");socials.innerHTML="";
+ [
+  {icon:"◎",label:"Instagram",url:"https://www.instagram.com/"},
+  {icon:"♪",label:"TikTok",url:"https://www.tiktok.com/"},
+  {icon:"▶",label:"YouTube",url:"https://www.youtube.com/"},
+  {icon:"◇",label:"Discord",url:"https://discord.com/"},
+  {icon:"✦",label:"Website",url:"https://www.google.com/"}
+ ].forEach(item=>{const b=document.createElement("a");b.className="publicSocial";b.href=item.url;b.target="_blank";b.rel="noopener noreferrer";b.title=item.label;b.setAttribute("aria-label",item.label);b.textContent=item.icon;socials.appendChild(b)});
+ const box=$("#publicLinks");box.innerHTML="";
+ links.forEach(l=>{const a=document.createElement("a");a.className="publicLink";a.href=normalizeUrl(l.url)||"#";a.target="_blank";a.rel="noopener noreferrer";a.innerHTML=`<div class="publicLinkPic">${l.image?`<img src="${escapeHtml(l.image)}" alt="">`:escapeHtml(l.icon||"✦")}</div><div class="publicLinkCopy"><strong>${escapeHtml(l.title||"Untitled Link")}</strong><small>${escapeHtml(l.desc||"")}</small></div><div class="publicDots">•••</div>`;box.appendChild(a)});
 }
 publicMode();
 $("#resetBtn").onclick=()=>{if(confirm("Reset this demo?")){localStorage.removeItem("biospace_iphone_studio");location.reload()}};
