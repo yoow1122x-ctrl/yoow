@@ -24,3 +24,10 @@ This version keeps the existing BioSpace UI but fixes the iPhone/public-profile 
 8. Save profile → add links → Share Profile.
 
 Never put the Supabase service-role key inside `index.html`.
+
+
+## Important
+The public profile is intentionally NOT allowed to fall back to iPhone localStorage. A public URL must read the creator's latest data from the online database; otherwise another device can only see old/default data.
+
+### Required online connection
+This project cannot create a Supabase account or private database key automatically from inside the ZIP. You must connect one Supabase project to Vercel by adding the two server environment variables shown above. The service-role key stays server-side in `api/profile.js` through Vercel environment variables and is never placed in the browser.

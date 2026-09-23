@@ -544,8 +544,11 @@ $("#avatar").addEventListener("change",e=>{
     const max=320, scale=Math.min(1,max/Math.max(img.width,img.height));
     const c=document.createElement("canvas"); c.width=Math.max(1,Math.round(img.width*scale)); c.height=Math.max(1,Math.round(img.height*scale));
     const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,c.width,c.height);
-    const compact=c.toDataURL("image/jpeg",0.72);
-    $("#pAvatar").innerHTML=`<img src="${compact}" alt="">`;state.avatar=compact;saveState();cloudSave(false);render();
+    let quality=0.72, compact=c.toDataURL("image/jpeg",quality);
+    while(compact.length>700000 && quality>0.35){ quality-=0.08; compact=c.toDataURL("image/jpeg",quality); }
+    $("#pAvatar").innerHTML=`<img src="${compact}" alt="">`;state.avatar=compact;saveState();
+    cloudSave(true).then(r=>{ if(r) setCloudStatus("✓ Photo saved online",true); });
+    render();
   };
   img.src=r.result;
 };r.readAsDataURL(f);
@@ -580,6 +583,12 @@ $("#applySocial").onclick=()=>{
  const vals=$$(".socialInput").map(x=>x.value);$("#socials").innerHTML=vals.map(v=>`<div class="social">${v||"•"}</div>`).join("");
 };
 const API_BASE = "";
+function setCloudStatus(message, ok=false){
+  let el=document.getElementById("cloudStatus");
+  if(!el){ el=document.createElement("div"); el.id="cloudStatus"; el.style.cssText="position:fixed;left:18px;bottom:18px;z-index:9999;padding:10px 13px;border-radius:12px;font-size:12px;background:#14141b;border:1px solid #2b2b35;color:#aaa;box-shadow:0 12px 35px #0008"; document.body.appendChild(el); }
+  el.textContent=message; el.style.color=ok?"#86efac":"#fca5a5";
+  clearTimeout(el._t); el._t=setTimeout(()=>el.remove(),4500);
+}
 function getCreatorToken(){
   let token=localStorage.getItem("biospace_creator_token");
   if(!token){
@@ -612,7 +621,7 @@ async function cloudSave(showError=false){
     localStorage.setItem("biospace_cloud_username",payload.username);
     return data;
   }catch(err){
-    if(showError) alert("Online save failed. Your changes are still saved on this iPhone.\n\n"+err.message);
+    if(showError){ setCloudStatus("Online save failed: "+err.message,false); alert("Online save failed.\n\n"+err.message+"\n\nMake sure Supabase + Vercel are connected."); }
     return null;
   }
 }
@@ -645,10 +654,9 @@ async function publicMode(){
  const username=params.get("profile");
  let savedProfile=await loadPublicProfile(username);
  if(!savedProfile){
-   const saved=JSON.parse(localStorage.getItem("biospace_iphone_studio")||"null");
-   savedProfile=saved;
+   document.body.innerHTML=`<div style="min-height:100vh;display:grid;place-items:center;background:#07070b;color:#fff;font-family:system-ui;padding:24px;text-align:center"><div><div style="font-size:42px">🔗</div><h2>Profile not found</h2><p style="color:#aaa">This public profile has not been saved online yet.</p></div></div>`;
+   return;
  }
- if(!savedProfile)return;
  const name=savedProfile.name||"Mofaarah";
  const user=savedProfile.username||username;
  const bio=savedProfile.bio||"";
