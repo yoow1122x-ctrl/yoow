@@ -1,33 +1,10 @@
-# BioSpace — iPhone online profile fix
+# BioSpace — Public Profile INTERACTIVE FINAL
 
-This version keeps the existing BioSpace UI but fixes the iPhone/public-profile problem by saving profiles to Supabase through a Vercel serverless API.
-
-## What is fixed
-- Save name, bio and photo from iPhone.
-- Add/edit/delete links and sync them online.
-- Share Profile creates one clean URL: `?profile=username`.
-- The same public URL loads the latest saved name, photo and links.
-- No login/signup is required.
-- Creator ownership uses a private random creator token stored in the creator browser.
-- Public profile has no iPhone frame, Dynamic Island, status bar or cover photo.
-
-## Setup
-1. Create a Supabase project.
-2. Open Supabase SQL Editor and run `schema.sql`.
-3. In Supabase Project Settings/API, copy the Project URL and the `service_role` key.
-4. Deploy this folder to Vercel.
-5. In Vercel Project Settings → Environment Variables, add:
-   - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-6. Redeploy.
-7. Open your deployed BioSpace on iPhone.
-8. Save profile → add links → Share Profile.
-
-Never put the Supabase service-role key inside `index.html`.
-
-
-## Important
-The public profile is intentionally NOT allowed to fall back to iPhone localStorage. A public URL must read the creator's latest data from the online database; otherwise another device can only see old/default data.
-
-### Required online connection
-This project cannot create a Supabase account or private database key automatically from inside the ZIP. You must connect one Supabase project to Vercel by adding the two server environment variables shown above. The service-role key stays server-side in `api/profile.js` through Vercel environment variables and is never placed in the browser.
+Fixed public profile interactions:
+- Social icons are real clickable links.
+- Social icons open Instagram, TikTok, YouTube, Discord and Website in a new tab.
+- Social icons have entrance, hover and press animations.
+- Link cards are clickable and open their URLs.
+- Link cards have entrance, hover and press animations.
+- Link thumbnails animate on hover.
+- Shared profile still has no iPhone frame, Dynamic Island, status bar, top color banner or Cover Photo.

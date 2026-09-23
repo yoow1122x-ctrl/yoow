@@ -53,90 +53,8 @@ radial-gradient(circle at 90% 20%,#db277755,transparent 30%),var(--preview-bg);p
 @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .animate-off *{animation:none!important;transition:none!important}
-@media(max-width:1200px){
-  .app{grid-template-columns:220px minmax(0,1fr)}
-  .previewPanel{display:none}
-  .main{max-width:none}
-}
-
-/* iPhone / mobile web layout */
-@media(max-width:760px){
-  :root{--mobile-nav:76px}
-  html{width:100%;overflow-x:hidden;background:var(--bg)}
-  body{width:100%;min-width:0;overflow-x:hidden;padding-bottom:calc(var(--mobile-nav) + env(safe-area-inset-bottom));}
-  .app{display:block;width:100%;min-height:100svh;overflow-x:hidden}
-
-  .sidebar{
-    position:fixed;z-index:1000;left:0;right:0;bottom:0;top:auto;width:100%;height:calc(var(--mobile-nav) + env(safe-area-inset-bottom));
-    padding:7px 8px env(safe-area-inset-bottom);border:0;border-top:1px solid rgba(255,255,255,.10);
-    background:rgba(10,10,15,.90);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
-    box-shadow:0 -12px 40px rgba(0,0,0,.35);
-  }
-  .brand,.sidebottom{display:none}
-  .nav{height:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;overflow:visible}
-  .nav button{
-    min-width:0;width:100%;height:62px;padding:7px 2px;border-radius:15px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;
-    text-align:center;font-size:20px;color:#8e8e9a;line-height:1;
-  }
-  .nav button span{display:block;font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:64px}
-  .nav button.active{box-shadow:none;background:rgba(168,85,247,.14);color:#fff}
-  .nav button.active::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--accent);position:absolute;bottom:5px}
-
-  .main{width:100%;max-width:none;padding:calc(12px + env(safe-area-inset-top)) 12px 20px;margin:0}
-  .top{position:sticky;top:0;z-index:50;margin:0 -12px 14px;padding:10px 12px 12px;min-height:62px;align-items:center;
-    background:rgba(7,7,11,.84);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.06)}
-  .eyebrow{font-size:9px;letter-spacing:1.5px}
-  .title{font-size:22px;margin:2px 0}
-  .actions{gap:6px}
-  .actions .btn{padding:9px 10px;border-radius:12px;font-size:12px}
-  .actions #resetBtn{display:none}
-
-  .grid2{grid-template-columns:1fr;gap:0}
-  .card{padding:15px;border-radius:19px;margin-bottom:12px}
-  .card h3{font-size:15px;margin-bottom:13px}
-  .stats{grid-template-columns:1fr 1fr;gap:8px}
-  .stat{padding:13px;border-radius:15px;min-width:0}
-  .stat b{font-size:20px}
-  .stat span{font-size:11px}
-  .field{margin-bottom:12px}
-  .input,.textarea,.select{font-size:16px;min-height:46px;border-radius:13px}
-  .textarea{min-height:100px}
-  .btn{min-height:44px;border-radius:13px;padding:10px 13px}
-  .switchrow{min-height:54px}
-  .swatches{gap:10px}
-  .swatch{width:40px;height:40px}
-
-  .linkrow{padding:9px;gap:8px;border-radius:14px;flex-wrap:nowrap}
-  .linkinfo{min-width:0}
-  .linkinfo strong,.linkinfo small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .linkrow .mini{padding:8px;flex:none}
-
-  /* Keep the live iPhone preview useful on mobile without breaking the editor. */
-  .previewPanel{display:flex;position:relative;width:100%;height:auto;min-height:0;padding:18px 0 8px;border:0;background:transparent;overflow:visible}
-  .previewHead{display:none}
-  .iphone{width:min(92vw,390px);height:min(780px,145vw);min-height:650px;border-width:7px;border-radius:43px;margin:0 auto;transform:none!important}
-  .screen{border-radius:34px;padding:58px 17px 18px}
-  .phonebar{left:18px;right:18px}
-
-  /* Prevent iOS Safari zoom when focusing inputs and keep controls touch friendly. */
-  input,textarea,select{font-size:16px!important}
-  button,a,.nav button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-}
-
-@media(max-width:390px){
-  .main{padding-left:10px;padding-right:10px}
-  .top{margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}
-  .stats{gap:6px}
-  .stat{padding:11px}
-  .iphone{width:94vw;min-height:620px}
-}
-
-@media(orientation:landscape) and (max-width:900px){
-  .sidebar{height:64px}
-  .nav button{height:52px}
-  body{padding-bottom:64px}
-  .iphone{height:82vh;min-height:520px}
-}
+@media(max-width:1200px){.app{grid-template-columns:220px 1fr}.previewPanel{display:none}}
+@media(max-width:760px){.app{display:block}.sidebar{height:auto;position:relative;border:0;padding:10px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.sidebottom{display:none}.main{padding:16px}.grid2{grid-template-columns:1fr}.top{align-items:flex-start}.stats{grid-template-columns:1fr 1fr}.previewPanel{display:flex;position:relative;height:auto;border:0}.iphone{width:340px}}
 
 /* SHARED PROFILE MODE: no phone mockup, no Dynamic Island, no status bar, no top color */
 body.public-profile-mode{
@@ -364,7 +282,6 @@ body.public-profile-mode #publicProfileRoot{
       <h3>Profile identity</h3>
       <div class="grid2">
         <div class="field"><label>Display name</label><input class="input" id="name" value="Mofaarah"></div>
-        <button class="btn primary" id="saveProfileBtn" type="button">💾 Save profile</button>
         <div class="field"><label>Username</label><input class="input" id="username" value="mofaarah"></div>
       </div>
       <div class="field"><label>Bio</label><textarea class="textarea" id="bio">Creator • Video Editor • Music</textarea></div>
@@ -476,7 +393,7 @@ body.public-profile-mode #publicProfileRoot{
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const saved=JSON.parse(localStorage.getItem("biospace_iphone_studio")||"null");
-const state=saved||{animation:true,glass:true,footer:true,name:"Mofaarah",username:"mofaarah",bio:"Creator • Video Editor • Music",avatar:"",links:[
+const state=saved||{animation:true,glass:true,footer:true,links:[
  {title:"TikTok",desc:"Follow me on TikTok",icon:"♪",url:"https://www.tiktok.com/",image:""},
  {title:"Instagram",desc:"My latest photos",icon:"◎",url:"https://www.instagram.com/",image:""},
  {title:"YouTube",desc:"Watch my videos",icon:"▶",url:"https://www.youtube.com/",image:""},
@@ -521,12 +438,7 @@ const box=$("#profileLinks"); box.innerHTML="";
  document.body.classList.toggle("animate-off",!state.animation);
  $("#iphone").style.setProperty("--radius",$("#radius").value+"px");
 }
-function syncProfile(){
- state.name=(document.querySelector("#name")?.value||state.name||"Mofaarah").trim()||"Mofaarah";
- state.username=(document.querySelector("#username")?.value||state.username||"mofaarah").replace(/^@/,"").trim()||"mofaarah";
- state.bio=document.querySelector("#bio")?.value ?? state.bio ?? "";
-}
-function saveState(){syncProfile();localStorage.setItem("biospace_iphone_studio",JSON.stringify(state));}
+function saveState(){localStorage.setItem("biospace_iphone_studio",JSON.stringify(state));}
 function escapeHtml(value){
  return String(value ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 }
@@ -565,7 +477,6 @@ function editLink(i){
  l.icon=icon.trim()||"✦";
  l.image=image.trim();
  saveState();
- cloudSave(false);
  renderEditors();
  render();
 }
@@ -580,7 +491,7 @@ function showLinkMenu(i){
  else if(action==="3"){
    if(confirm(`Delete "${l.title}"?`)){
      state.links.splice(i,1);
-     saveState(); cloudSave(false); renderEditors(); render();
+     saveState(); renderEditors(); render();
    }
  }
 }
@@ -596,7 +507,15 @@ function renderEditors(){
   row.querySelector(".open").onclick=()=>openLink(l.url);
   row.querySelector(".del").onclick=()=>{
     if(confirm(`Delete "${l.title}"?`)){
-      state.links.splice(i,1);saveState();cloudSave(false);renderEditors();render();
+      state.links.splice(i,1);saveState();if(saved){
+  if(saved.name)$("#name").value=saved.name;
+  if(saved.username)$("#username").value=saved.username;
+  if(saved.bio)$("#bio").value=saved.bio;
+  if(saved.avatar)$("#pAvatar").innerHTML=`<img src="${saved.avatar}" alt="">`;
+  if(saved.animation!==undefined){state.animation=saved.animation;}
+  if(saved.footer!==undefined){state.footer=saved.footer;}
+}
+renderEditors();render();
     }
   };
   box.appendChild(row);
@@ -607,33 +526,10 @@ $$(".nav button").forEach(b=>b.onclick=()=>{
  $$(".section").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.page).classList.add("active");
  $("#pageTitle").textContent=b.textContent.trim();
 });
-["name","username","bio"].forEach(id=>$("#"+id).addEventListener("input",()=>{render()}));
-$("#saveProfileBtn").onclick=async()=>{
-  state.name=$("#name").value.trim()||"Mofaarah";
-  state.username=$("#username").value.trim().replace(/^@/,"").replace(/\s+/g,"-").toLowerCase()||"mofaarah";
-  state.bio=$("#bio").value.trim();
-  saveState();
-  await cloudSave(true);
-  render();
-  alert("Profile saved successfully!");
-};
-$("#name").value=state.name||"Mofaarah";$("#username").value=state.username||"mofaarah";$("#bio").value=state.bio||"";
+["name","username","bio"].forEach(id=>$("#"+id).addEventListener("input",()=>{saveState();render()}));
 $("#avatar").addEventListener("change",e=>{
  const f=e.target.files[0];if(!f)return;const r=new FileReader();
- r.onload=()=>{
-  const img=new Image();
-  img.onload=()=>{
-    const max=320, scale=Math.min(1,max/Math.max(img.width,img.height));
-    const c=document.createElement("canvas"); c.width=Math.max(1,Math.round(img.width*scale)); c.height=Math.max(1,Math.round(img.height*scale));
-    const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,c.width,c.height);
-    let quality=0.72, compact=c.toDataURL("image/jpeg",quality);
-    while(compact.length>700000 && quality>0.35){ quality-=0.08; compact=c.toDataURL("image/jpeg",quality); }
-    $("#pAvatar").innerHTML=`<img src="${compact}" alt="">`;state.avatar=compact;saveState();
-    cloudSave(true).then(r=>{ if(r) setCloudStatus("✓ Photo saved online",true); });
-    render();
-  };
-  img.src=r.result;
-};r.readAsDataURL(f);
+ r.onload=()=>{$("#pAvatar").innerHTML=`<img src="${r.result}" alt="">`;state.avatar=r.result;saveState();render()};r.readAsDataURL(f);
 });
 $$("[data-switch]").forEach(sw=>sw.onclick=()=>{
  sw.classList.toggle("on");const k=sw.dataset.switch;state[k]=sw.classList.contains("on");render();
@@ -647,7 +543,7 @@ $("#addLink").onclick=()=>{
  if(!url)return;
  const safe=normalizeUrl(url);
  if(!safe){alert("URL-ka sax ma aha.");return;}
- state.links.push({title,desc,icon,url:safe,image});saveState();cloudSave(false);renderEditors();render();
+ state.links.push({title,desc,icon,url:safe,image});saveState();renderEditors();render();
 };
 const themes={
  purple:["#a855f7","#ec4899"],ocean:["#06b6d4","#3b82f6"],lime:["#84cc16","#22c55e"],sunset:["#f97316","#ef4444"],ice:["#e0e7ff","#38bdf8"]
@@ -664,101 +560,95 @@ $("#device").onchange=e=>{$(".iphone").style.height=e.target.value.includes("15"
 $("#applySocial").onclick=()=>{
  const vals=$$(".socialInput").map(x=>x.value);$("#socials").innerHTML=vals.map(v=>`<div class="social">${v||"•"}</div>`).join("");
 };
-const API_BASE = "";
-function setCloudStatus(message, ok=false){
-  let el=document.getElementById("cloudStatus");
-  if(!el){ el=document.createElement("div"); el.id="cloudStatus"; el.style.cssText="position:fixed;left:18px;bottom:18px;z-index:9999;padding:10px 13px;border-radius:12px;font-size:12px;background:#14141b;border:1px solid #2b2b35;color:#aaa;box-shadow:0 12px 35px #0008"; document.body.appendChild(el); }
-  el.textContent=message; el.style.color=ok?"#86efac":"#fca5a5";
-  clearTimeout(el._t); el._t=setTimeout(()=>el.remove(),4500);
-}
-function getCreatorToken(){
-  let token=localStorage.getItem("biospace_creator_token");
-  if(!token){
-    const bytes=new Uint8Array(24); crypto.getRandomValues(bytes);
-    token=Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
-    localStorage.setItem("biospace_creator_token",token);
-  }
-  return token;
-}
-function profilePayload(){
-  saveState();
-  return {
-    name:state.name||"Mofaarah",
-    username:(state.username||"mofaarah").replace(/^@/,""),
-    bio:state.bio||"",
-    avatar:state.avatar||"",
-    links:Array.isArray(state.links)?state.links.map(l=>({title:l.title||"Link",desc:l.desc||"",icon:l.icon||"✦",url:l.url||"",image:l.image||""})):[],
-    design:{accent:state.accent||"#8b5cf6",accent2:state.accent2||"#ec4899"}
-  };
-}
-async function cloudSave(showError=false){
-  const payload=profilePayload();
-  try{
-    const res=await fetch(`${API_BASE}/api/profile`,{
-      method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({token:getCreatorToken(),profile:payload})
-    });
-    const data=await res.json().catch(()=>({}));
-    if(!res.ok) throw new Error(data.error||"Cloud save failed");
-    localStorage.setItem("biospace_cloud_username",payload.username);
-    return data;
-  }catch(err){
-    if(showError){ setCloudStatus("Online save failed: "+err.message,false); alert("Online save failed.\n\n"+err.message+"\n\nMake sure Supabase + Vercel are connected."); }
-    return null;
-  }
-}
 function publicProfileUrl(){
-  const username=encodeURIComponent((state.username||"mofaarah").replace(/^@/,""));
-  return `${window.location.href.split("?")[0].split("#")[0]}?profile=${username}`;
+ const username=encodeURIComponent($("#username").value.replace(/^@/,"").trim()||"mofaarah");
+ const base=window.location.href.split("?")[0].split("#")[0];
+ return `${base}?profile=${username}`;
 }
 $("#shareBtn").onclick=async()=>{
-  saveState();
-  const saved=await cloudSave(true);
-  if(!saved)return;
-  const url=publicProfileUrl();
-  try{
-    await navigator.clipboard.writeText(url);
-    alert("Profile link copied!\n\n"+url+"\n\nThis same link will show your latest saved profile.");
-  }catch{prompt("Copy your profile link:",url)}
+ // Save the current Studio state, including all links, before sharing.
+ saveState();
+ const url=publicProfileUrl();
+ try{
+   await navigator.clipboard.writeText(url);
+   alert("Profile link copied!\n\n"+url);
+ }catch{
+   prompt("Copy your profile link:",url);
+ }
 };
 
-async function loadPublicProfile(username){
-  try{
-    const res=await fetch(`${API_BASE}/api/profile?username=${encodeURIComponent(username)}`,{cache:"no-store"});
-    if(!res.ok) return null;
-    return await res.json();
-  }catch{return null}
-}
-async function publicMode(){
+function publicMode(){
  const params=new URLSearchParams(window.location.search);
  if(!params.get("profile"))return;
+
  document.body.classList.add("public-profile-mode");
- const username=params.get("profile");
- let savedProfile=await loadPublicProfile(username);
- if(!savedProfile){
-   document.body.innerHTML=`<div style="min-height:100vh;display:grid;place-items:center;background:#07070b;color:#fff;font-family:system-ui;padding:24px;text-align:center"><div><div style="font-size:42px">🔗</div><h2>Profile not found</h2><p style="color:#aaa">This public profile has not been saved online yet.</p></div></div>`;
-   return;
- }
+
+ const savedProfile=JSON.parse(localStorage.getItem("biospace_iphone_studio")||"null");
+ if(!savedProfile)return;
+
  const name=savedProfile.name||"Mofaarah";
- const user=savedProfile.username||username;
+ const username=savedProfile.username||params.get("profile");
  const bio=savedProfile.bio||"";
- const links=(Array.isArray(savedProfile.links)&&savedProfile.links.length)?savedProfile.links:[];
+ const defaultPublicLinks=[
+   {title:"TikTok",desc:"Follow me on TikTok",icon:"♪",url:"https://www.tiktok.com/",image:""},
+   {title:"Instagram",desc:"My latest photos",icon:"◎",url:"https://www.instagram.com/",image:""},
+   {title:"YouTube",desc:"Watch my videos",icon:"▶",url:"https://www.youtube.com/",image:""},
+   {title:"Snapchat",desc:"Add me on Snapchat",icon:"👻",url:"https://www.snapchat.com/",image:""},
+   {title:"Discord",desc:"Join my community",icon:"◇",url:"https://discord.com/",image:""}
+ ];
+ const links=(Array.isArray(savedProfile.links)&&savedProfile.links.length)
+   ? savedProfile.links
+   : defaultPublicLinks;
+
  $("#publicName").textContent=name+" ✦";
- $("#publicHandle").textContent="@"+String(user).replace(/^@/,"");
+ $("#publicHandle").textContent="@"+String(username).replace(/^@/,"");
  $("#publicBio").textContent=bio;
+
  const avatar=$("#publicAvatar");
- if(savedProfile.avatar) avatar.innerHTML=`<img src="${escapeHtml(savedProfile.avatar)}" alt="">`;
- else avatar.textContent=(name.trim()[0]||"M").toUpperCase();
- const socials=$("#publicSocials");socials.innerHTML="";
- [
-  {icon:"◎",label:"Instagram",url:"https://www.instagram.com/"},
-  {icon:"♪",label:"TikTok",url:"https://www.tiktok.com/"},
-  {icon:"▶",label:"YouTube",url:"https://www.youtube.com/"},
-  {icon:"◇",label:"Discord",url:"https://discord.com/"},
-  {icon:"✦",label:"Website",url:"https://www.google.com/"}
- ].forEach(item=>{const b=document.createElement("a");b.className="publicSocial";b.href=item.url;b.target="_blank";b.rel="noopener noreferrer";b.title=item.label;b.setAttribute("aria-label",item.label);b.textContent=item.icon;socials.appendChild(b)});
- const box=$("#publicLinks");box.innerHTML="";
- links.forEach(l=>{const a=document.createElement("a");a.className="publicLink";a.href=normalizeUrl(l.url)||"#";a.target="_blank";a.rel="noopener noreferrer";a.innerHTML=`<div class="publicLinkPic">${l.image?`<img src="${escapeHtml(l.image)}" alt="">`:escapeHtml(l.icon||"✦")}</div><div class="publicLinkCopy"><strong>${escapeHtml(l.title||"Untitled Link")}</strong><small>${escapeHtml(l.desc||"")}</small></div><div class="publicDots">•••</div>`;box.appendChild(a)});
+ if(savedProfile.avatar){
+   avatar.innerHTML=`<img src="${savedProfile.avatar}" alt="">`;
+ }else{
+   avatar.textContent=(name.trim()[0]||"M").toUpperCase();
+ }
+
+ const socials=$("#publicSocials");
+ socials.innerHTML="";
+ const socialItems=[
+   {icon:"◎",label:"Instagram",url:"https://www.instagram.com/"},
+   {icon:"♪",label:"TikTok",url:"https://www.tiktok.com/"},
+   {icon:"▶",label:"YouTube",url:"https://www.youtube.com/"},
+   {icon:"◇",label:"Discord",url:"https://discord.com/"},
+   {icon:"✦",label:"Website",url:"https://www.google.com/"}
+ ];
+ socialItems.forEach(item=>{
+   const b=document.createElement("a");
+   b.className="publicSocial";
+   b.href=item.url;
+   b.target="_blank";
+   b.rel="noopener noreferrer";
+   b.title=item.label;
+   b.setAttribute("aria-label",item.label);
+   b.textContent=item.icon;
+   socials.appendChild(b);
+ });
+
+ const box=$("#publicLinks");
+ box.innerHTML="";
+ links.forEach(l=>{
+   const a=document.createElement("a");
+   a.className="publicLink";
+   a.href=normalizeUrl(l.url)||"#";
+   a.target="_blank";
+   a.rel="noopener noreferrer";
+   a.innerHTML=`
+     <div class="publicLinkPic">${l.image?`<img src="${escapeHtml(l.image)}" alt="">`:escapeHtml(l.icon||"✦")}</div>
+     <div class="publicLinkCopy">
+       <strong>${escapeHtml(l.title||"Untitled Link")}</strong>
+       <small>${escapeHtml(l.desc||"")}</small>
+     </div>
+     <div class="publicDots">•••</div>`;
+   box.appendChild(a);
+ });
 }
 publicMode();
 $("#resetBtn").onclick=()=>{if(confirm("Reset this demo?")){localStorage.removeItem("biospace_iphone_studio");location.reload()}};
