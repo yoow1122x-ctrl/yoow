@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BioSpace — iPhone Profile Studio</title>
+<style>
+:root{
+  --bg:#07070b;--panel:#111117;--panel2:#18181f;--line:#2b2b35;
+  --text:#fff;--muted:#a7a7b4;--accent:#a855f7;--accent2:#ec4899;
+  --preview-bg:#08080d;--card:#1b1b22;--radius:24px;
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:
+radial-gradient(circle at 15% 10%,#281348 0,transparent 35%),
+radial-gradient(circle at 90% 20%,#39102e 0,transparent 32%),var(--bg);color:var(--text)}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+.app{display:grid;grid-template-columns:260px minmax(500px,1fr) 470px;min-height:100vh}
+.sidebar{border-right:1px solid var(--line);background:rgba(10,10,15,.82);backdrop-filter:blur(24px);padding:22px 16px;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;font-weight:900;font-size:20px;padding:8px 10px 24px}
+.logo{width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;box-shadow:0 12px 35px #a855f733}
+.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#a7a7b4;text-align:left;padding:13px 14px;border-radius:14px;display:flex;gap:12px;align-items:center}
+.nav button:hover,.nav button.active{background:#ffffff0b;color:#fff}.nav button.active{box-shadow:inset 3px 0 var(--accent)}
+.sidebottom{position:absolute;bottom:20px;left:16px;right:16px;border:1px solid var(--line);padding:14px;border-radius:18px;background:#ffffff05}
+.main{padding:28px;max-width:900px;width:100%;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#a78bfa}.title{font-size:30px;font-weight:900;margin:5px 0}
+.actions{display:flex;gap:8px}.btn{border:1px solid var(--line);background:#ffffff08;color:#fff;padding:11px 15px;border-radius:13px}.btn.primary{border:0;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 10px 30px #a855f733}
+.section{display:none}.section.active{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:linear-gradient(180deg,#ffffff08,#ffffff03);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:0 20px 60px #0003}
+.card h3{margin:0 0 15px;font-size:16px}.field{margin-bottom:14px}.field label{display:block;color:#aaaab7;font-size:12px;margin-bottom:7px}
+.input,.textarea,.select{width:100%;background:#09090e;border:1px solid #30303a;color:#fff;border-radius:13px;padding:12px 13px;outline:none}
+.input:focus,.textarea:focus,.select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #a855f71a}.textarea{min-height:90px;resize:vertical}
+.swatches{display:flex;gap:9px;flex-wrap:wrap}.swatch{width:35px;height:35px;border-radius:50%;border:2px solid #fff2;box-shadow:0 4px 15px #0006}.swatch.selected{border-color:#fff;transform:scale(1.08)}
+.range{width:100%;accent-color:var(--accent)}
+.switchrow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #ffffff0a}.switch{width:48px;height:27px;border-radius:30px;background:#30303a;padding:3px}.switch i{display:block;width:21px;height:21px;border-radius:50%;background:#fff;transition:.25s}.switch.on{background:linear-gradient(90deg,var(--accent),var(--accent2))}.switch.on i{transform:translateX(21px)}
+.linkrow{display:flex;gap:10px;align-items:center;background:#ffffff05;border:1px solid #ffffff0c;padding:10px;border-radius:15px;margin-bottom:9px}.drag{color:#777}.linkicon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));font-weight:900}.linkinfo{flex:1}.linkinfo strong{display:block}.linkinfo small{color:#999}.linkrow .mini{background:#ffffff08;border:1px solid #ffffff0d;color:#bbb;padding:7px;border-radius:9px}.linkrow .mini:hover{color:#fff;background:#ffffff12}.plink{cursor:pointer}.plink:focus{outline:2px solid var(--accent);outline-offset:2px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:#ffffff05;border:1px solid var(--line);padding:16px;border-radius:17px}.stat b{font-size:24px;display:block}.stat span{color:#999;font-size:12px}
+.previewPanel{border-left:1px solid var(--line);background:#09090d;display:flex;flex-direction:column;align-items:center;padding:25px 18px;position:sticky;top:0;height:100vh;overflow:auto}
+.previewHead{width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.previewHead strong{font-size:14px}.deviceSelect{background:#15151c;color:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}
+.iphone{width:365px;height:750px;border:8px solid #262630;border-radius:47px;padding:9px;background:#030306;box-shadow:0 35px 90px #000,0 0 0 1px #5555;position:relative;transition:.35s;overflow:hidden}
+.iphone.small{transform:scale(.9);transform-origin:top center}.iphone.large{transform:scale(1.02);transform-origin:top center}
+.island{position:absolute;z-index:20;top:14px;left:50%;transform:translateX(-50%);width:108px;height:29px;background:#000;border-radius:20px;box-shadow:inset 0 1px 2px #fff1}
+.screen{height:100%;border-radius:37px;overflow:hidden;position:relative;background:
+radial-gradient(circle at 20% 0%,#52278a55,transparent 34%),
+radial-gradient(circle at 90% 20%,#db277755,transparent 30%),var(--preview-bg);padding:58px 20px 20px;overflow-y:auto;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.profile{text-align:center;animation:rise .8s ease both}.avatar{width:88px;height:88px;border-radius:50%;margin:4px auto 13px;display:grid;place-items:center;font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));border:3px solid #fff;box-shadow:0 0 35px color-mix(in srgb,var(--accent),transparent 55%);overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover}.pname{font-size:24px;font-weight:900}.handle{color:#aaa;font-size:13px;margin-top:4px}.bio{color:#ddd;font-size:13px;margin:14px auto;max-width:290px;line-height:1.5}
+.socials{display:flex;justify-content:center;gap:8px;margin:13px 0 17px}.social{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:1px solid #fff2;background:#ffffff0b;color:#fff;transition:.25s}.social:hover{transform:translateY(-5px) scale(1.08);background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.profilelinks{display:grid;gap:11px}.plink{display:flex;align-items:center;gap:12px;text-align:left;padding:12px 13px;border:1px solid #fff1;border-radius:17px;background:linear-gradient(110deg,#ffffff0d,#ffffff04);box-shadow:0 8px 25px #0005;transition:.28s;animation:rise .6s ease both;animation-delay:var(--delay)}
+.plink:hover{transform:translateY(-4px) scale(1.01);border-color:#fff3;box-shadow:0 15px 35px #0008}.plink .pic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));font-weight:900;flex:none;overflow:hidden}.plink .pic img{width:100%;height:100%;object-fit:cover}.plink .copy{flex:1}.plink strong{font-size:15px}.plink small{display:block;color:#aaa;font-size:11px;margin-top:3px}.dots{color:#aaa;letter-spacing:2px}.footer{text-align:center;color:#777;font-size:10px;padding:17px}
+.phonebar{display:flex;justify-content:space-between;color:#fff;font-size:11px;position:absolute;top:17px;left:20px;right:20px;z-index:10}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.animate-off *{animation:none!important;transition:none!important}
+@media(max-width:1200px){.app{grid-template-columns:220px 1fr}.previewPanel{display:none}}
+@media(max-width:760px){.app{display:block}.sidebar{height:auto;position:relative;border:0;padding:10px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.sidebottom{display:none}.main{padding:16px}.grid2{grid-template-columns:1fr}.top{align-items:flex-start}.stats{grid-template-columns:1fr 1fr}.previewPanel{display:flex;position:relative;height:auto;border:0}.iphone{width:340px}}
+
+/* SHARED PROFILE MODE: no phone mockup, no Dynamic Island, no status bar, no top color */
+body.public-profile-mode{
+  background:var(--preview-bg)!important;
+  overflow:auto!important;
+}
+body.public-profile-mode .sidebar,
+body.public-profile-mode .main,
+body.public-profile-mode .previewHead{
+  display:none!important;
+}
+body.public-profile-mode .previewPanel{
+  display:flex!important;
+  position:fixed!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  background:#07070b!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  overflow:auto!important;
+}
+body.public-profile-mode .iphone{
+  width:min(520px,100vw)!important;
+  height:auto!important;
+  min-height:100vh!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:#07070b!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+body.public-profile-mode .island,
+body.public-profile-mode .phonebar{
+  display:none!important;
+}
+body.public-profile-mode .screen{
+  width:100%!important;
+  min-height:100vh!important;
+  height:auto!important;
+  padding:38px 20px 32px!important;
+  margin:0!important;
+  border-radius:0!important;
+  background:#07070b!important;
+  overflow:visible!important;
+}
+body.public-profile-mode .profile{
+  padding-top:8px!important;
+}
+body.public-profile-mode .profilelinks{
+  max-width:440px;
+  margin:0 auto;
+}
+
+/* CLEAN PUBLIC PROFILE — completely separate from iPhone preview */
+#publicProfileRoot{display:none}
+body.public-profile-mode{background:#07070b!important;overflow-y:auto!important;overflow-x:hidden!important}
+body.public-profile-mode .app{display:none!important}
+body.public-profile-mode #publicProfileRoot{
+  display:block!important;
+  width:100%!important;
+  min-height:100vh!important;
+  padding:48px 20px 40px!important;
+  box-sizing:border-box!important;
+  background:#07070b!important;
+}
+.publicProfileCard{
+  width:min(100%,520px);
+  margin:0 auto;
+  text-align:center;
+}
+.publicAvatar{
+  width:96px;height:96px;border-radius:50%;
+  margin:0 auto 16px;
+  display:grid;place-items:center;
+  font-size:34px;font-weight:900;color:#fff;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:3px solid #fff;
+  box-shadow:0 0 35px color-mix(in srgb,var(--accent),transparent 55%);
+  overflow:hidden;
+}
+.publicAvatar img{width:100%;height:100%;object-fit:cover}
+.publicName{font-size:28px;font-weight:900;color:#fff}
+.publicHandle{margin-top:5px;color:#999;font-size:14px}
+.publicBio{margin:14px auto 18px;color:#ddd;font-size:14px;line-height:1.5;max-width:360px}
+.publicSocials{display:flex;justify-content:center;gap:10px;margin:0 auto 24px}
+.publicSocial{
+  width:42px;height:42px;border-radius:50%;
+  display:grid;place-items:center;
+  border:1px solid #fff2;background:#ffffff0b;color:#fff;
+}
+.publicLinks{display:grid;gap:12px;width:min(100%,520px);margin:24px auto 0}
+.publicLink{
+  display:flex!important;visibility:visible!important;opacity:1!important;
+  align-items:center;gap:13px;text-align:left;
+  width:100%;box-sizing:border-box;
+  padding:13px 14px;
+  border:1px solid #fff1;border-radius:17px;
+  background:linear-gradient(110deg,#ffffff0d,#ffffff04);
+  box-shadow:0 8px 25px #0005;
+  color:#fff;text-decoration:none;
+  transition:.25s;
+}
+.publicLink:hover{transform:translateY(-3px);border-color:#fff3}
+.publicLinkPic{
+  width:48px;height:48px;border-radius:14px;flex:none;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  font-weight:900;overflow:hidden;
+}
+.publicLinkPic img{width:100%;height:100%;object-fit:cover}
+.publicLinkCopy{flex:1;min-width:0}
+.publicLinkCopy strong{display:block;font-size:15px}
+.publicLinkCopy small{display:block;color:#aaa;font-size:11px;margin-top:3px}
+.publicDots{color:#aaa;letter-spacing:2px}
+.publicFooter{margin-top:24px;color:#666;font-size:11px}
+
+/* PUBLIC PROFILE INTERACTIONS */
+.publicSocial{
+  cursor:pointer!important;
+  text-decoration:none!important;
+  color:#fff!important;
+  transform:translateY(0) scale(1);
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s,border-color .25s,box-shadow .25s;
+  animation:publicSocialIn .55s both;
+}
+.publicSocial:nth-child(1){animation-delay:.05s}
+.publicSocial:nth-child(2){animation-delay:.10s}
+.publicSocial:nth-child(3){animation-delay:.15s}
+.publicSocial:nth-child(4){animation-delay:.20s}
+.publicSocial:nth-child(5){animation-delay:.25s}
+.publicSocial:hover{
+  transform:translateY(-5px) scale(1.08)!important;
+  background:linear-gradient(135deg,var(--accent),var(--accent2))!important;
+  border-color:#fff5!important;
+  box-shadow:0 12px 28px color-mix(in srgb,var(--accent),transparent 55%)!important;
+}
+.publicSocial:active{
+  transform:scale(.88)!important;
+}
+.publicLink{
+  cursor:pointer!important;
+  transform:translateY(0);
+  transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s,border-color .28s,background .28s!important;
+  animation:publicLinkIn .55s both;
+}
+.publicLink:nth-child(1){animation-delay:.08s}
+.publicLink:nth-child(2){animation-delay:.14s}
+.publicLink:nth-child(3){animation-delay:.20s}
+.publicLink:nth-child(4){animation-delay:.26s}
+.publicLink:nth-child(5){animation-delay:.32s}
+.publicLink:hover{
+  transform:translateY(-4px) scale(1.012)!important;
+  border-color:#ffffff30!important;
+  box-shadow:0 16px 35px #0008!important;
+}
+.publicLink:active{
+  transform:scale(.97)!important;
+}
+.publicLinkPic{
+  transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s;
+}
+.publicLink:hover .publicLinkPic{
+  transform:rotate(-4deg) scale(1.07);
+  box-shadow:0 8px 22px color-mix(in srgb,var(--accent),transparent 55%);
+}
+@keyframes publicSocialIn{
+  from{opacity:0;transform:translateY(14px) scale(.82)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@keyframes publicLinkIn{
+  from{opacity:0;transform:translateY(18px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .publicSocial,.publicLink{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div id="publicProfileRoot" aria-label="Public BioSpace profile">
+  <div class="publicProfileCard">
+    <div class="publicAvatar" id="publicAvatar">M</div>
+    <div class="publicName" id="publicName">Mofaarah ✦</div>
+    <div class="publicHandle" id="publicHandle">@mofaarah</div>
+    <div class="publicBio" id="publicBio">Creator • Video Editor • Music</div>
+    <div class="publicSocials" id="publicSocials"></div>
+    <div class="publicLinks" id="publicLinks"></div>
+    <div class="publicFooter">BioSpace • Everything about you.</div>
+  </div>
+</div>
+
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">✦</div> BioSpace</div>
+  <div class="nav">
+    <button class="active" data-page="profile">◉ <span>Profile</span></button>
+    <button data-page="links">⌁ <span>Links</span></button>
+    <button data-page="design">✦ <span>Design Studio</span></button>
+    <button data-page="social">◎ <span>Social Icons</span></button>
+    <button data-page="analytics">⌁ <span>Analytics</span></button>
+  </div>
+  <div class="sidebottom">
+    <small style="color:#999">LIVE PREVIEW</small>
+    <div style="font-weight:800;margin-top:5px">@mofaarah</div>
+    <div style="font-size:12px;color:#888;margin-top:4px">Your iPhone profile is updating live.</div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <div><div class="eyebrow">Creator Studio</div><div class="title" id="pageTitle">Profile</div></div>
+    <div class="actions"><button class="btn" id="resetBtn">Reset</button><button class="btn primary" id="shareBtn">Share profile</button></div>
+  </div>
+
+  <section class="section active" id="profile">
+    <div class="card">
+      <h3>Profile identity</h3>
+      <div class="grid2">
+        <div class="field"><label>Display name</label><input class="input" id="name" value="Mofaarah"></div>
+        <div class="field"><label>Username</label><input class="input" id="username" value="mofaarah"></div>
+      </div>
+      <div class="field"><label>Bio</label><textarea class="textarea" id="bio">Creator • Video Editor • Music</textarea></div>
+      <div class="grid2">
+        <div class="field"><label>Profile photo</label><input class="input" id="avatar" type="file" accept="image/*"></div>
+        <div class="field"><label>Profile layout</label><select class="select" id="layout"><option value="center">Centered</option><option value="compact">Compact</option><option value="minimal">Minimal</option></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Quick appearance</h3>
+      <div class="switchrow"><span>Animated profile</span><div class="switch on" data-switch="animation"><i></i></div></div>
+      <div class="switchrow"><span>Glass links</span><div class="switch on" data-switch="glass"><i></i></div></div>
+      <div class="switchrow"><span>Show footer</span><div class="switch on" data-switch="footer"><i></i></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="links">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px"><h3 style="margin:0">Your links</h3><button class="btn primary" id="addLink">+ Add link</button></div>
+      <div id="linkEditor"></div>
+    </div>
+  </section>
+
+  <section class="section" id="design">
+    <div class="card">
+      <h3>Premium themes</h3>
+      <div class="swatches">
+        <button class="swatch" title="Purple Pink" data-theme="purple" style="background:linear-gradient(135deg,#a855f7,#ec4899)"></button>
+        <button class="swatch" title="Ocean" data-theme="ocean" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)"></button>
+        <button class="swatch" title="Lime" data-theme="lime" style="background:linear-gradient(135deg,#84cc16,#22c55e)"></button>
+        <button class="swatch" title="Sunset" data-theme="sunset" style="background:linear-gradient(135deg,#f97316,#ef4444)"></button>
+        <button class="swatch" title="Ice" data-theme="ice" style="background:linear-gradient(135deg,#e0e7ff,#38bdf8)"></button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Custom colors</h3>
+      <div class="grid2">
+        <div class="field"><label>Accent</label><input class="input" type="color" id="accent" value="#a855f7"></div>
+        <div class="field"><label>Accent 2</label><input class="input" type="color" id="accent2" value="#ec4899"></div>
+      </div>
+      <div class="field"><label>Background brightness</label><input class="range" id="brightness" type="range" min="0" max="100" value="8"></div>
+      <div class="field"><label>Link corner radius</label><input class="range" id="radius" type="range" min="8" max="30" value="17"></div>
+    </div>
+    <div class="card">
+      <h3>Phone preview</h3>
+      <div class="grid2">
+        <button class="btn" id="smallPhone">iPhone Small</button>
+        <button class="btn" id="largePhone">iPhone Pro Max</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="social">
+    <div class="card">
+      <h3>Social icons</h3>
+      <div class="grid2">
+        <div class="field"><label>Instagram</label><input class="input socialInput" data-social="instagram" value="◎"></div>
+        <div class="field"><label>TikTok</label><input class="input socialInput" data-social="tiktok" value="♪"></div>
+        <div class="field"><label>YouTube</label><input class="input socialInput" data-social="youtube" value="▶"></div>
+        <div class="field"><label>Discord</label><input class="input socialInput" data-social="discord" value="♢"></div>
+      </div>
+      <button class="btn primary" id="applySocial">Apply icons</button>
+    </div>
+  </section>
+
+  <section class="section" id="analytics">
+    <div class="stats">
+      <div class="stat"><b id="views">12.8K</b><span>Profile views</span></div>
+      <div class="stat"><b id="clicks">4.7K</b><span>Link clicks</span></div>
+      <div class="stat"><b id="followers">1.2K</b><span>Followers</span></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Last 7 days</h3>
+      <div style="height:180px;display:flex;align-items:end;gap:10px;padding-top:20px">
+        <div style="height:38%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
+        <div style="height:57%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
+        <div style="height:45%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
+        <div style="height:78%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
+        <div style="height:62%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
+        <div style="height:90%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
+        <div style="height:70%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<aside class="previewPanel">
+  <div class="previewHead"><strong>iPhone Live Preview</strong><select class="deviceSelect" id="device"><option>iPhone 15 Pro Max</option><option>iPhone 14 Pro</option><option>iPhone 13</option></select></div>
+  <div class="iphone" id="iphone">
+    <div class="island"></div>
+    <div class="phonebar"><span>9:41</span><span>● ● ▮</span></div>
+    <div class="screen">
+      <div class="profile">
+        <div class="avatar" id="pAvatar">M</div>
+        <div class="pname" id="pName">Mofaarah ✦</div>
+        <div class="handle" id="pHandle">@mofaarah</div>
+        <div class="bio" id="pBio">Creator • Video Editor • Music</div>
+        <div class="socials" id="socials">
+          <div class="social">◎</div><div class="social">♪</div><div class="social">▶</div><div class="social">♢</div><div class="social">✦</div>
+        </div>
+      </div>
+      <div class="profilelinks" id="profileLinks"></div>
+      <div class="footer" id="pFooter">BioSpace • Everything about you.</div>
+    </div>
+  </div>
+</aside>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const saved=JSON.parse(localStorage.getItem("biospace_iphone_studio")||"null");
+const state=saved||{animation:true,glass:true,footer:true,links:[
+ {title:"TikTok",desc:"Follow me on TikTok",icon:"♪",url:"https://www.tiktok.com/",image:""},
+ {title:"Instagram",desc:"My latest photos",icon:"◎",url:"https://www.instagram.com/",image:""},
+ {title:"YouTube",desc:"Watch my videos",icon:"▶",url:"https://www.youtube.com/",image:""},
+ {title:"Snapchat",desc:"Add me on Snapchat",icon:"👻",url:"https://www.snapchat.com/",image:""},
+ {title:"Discord",desc:"Join my community",icon:"◇",url:"https://discord.com/",image:""}
+]};
+function render(){
+ $("#pName").textContent=$("#name").value+" ✦";
+ $("#pHandle").textContent="@"+$("#username").value.replace(/^@/,"");
+ $("#pBio").textContent=$("#bio").value;
+const box=$("#profileLinks"); box.innerHTML="";
+ state.links.forEach((l,i)=>{
+  const el=document.createElement("div");
+  el.className="plink";
+  el.style.setProperty("--delay",(i*.07)+"s");
+  el.setAttribute("role","button");
+  el.setAttribute("tabindex","0");
+  el.innerHTML=`<div class="pic">${l.image ? `<img src="${escapeHtml(l.image)}" alt="">` : escapeHtml(l.icon)}</div>
+    <div class="copy"><strong>${escapeHtml(l.title)}</strong><small>${escapeHtml(l.desc)}</small></div>
+    <div class="dots">•••</div>`;
+
+  // Main link card opens the real URL.
+  el.onclick=(e)=>{
+    if(e.target.closest(".dots")) return;
+    openLink(l.url);
+  };
+  el.onkeydown=(e)=>{
+    if(e.key==="Enter" || e.key===" "){
+      e.preventDefault();
+      openLink(l.url);
+    }
+  };
+
+  // Three-dot menu opens edit/delete actions instead of navigating.
+  el.querySelector(".dots").onclick=(e)=>{
+    e.stopPropagation();
+    showLinkMenu(i);
+  };
+  box.appendChild(el);
+ });
+ $("#pFooter").style.display=state.footer?"block":"none";
+ document.body.classList.toggle("animate-off",!state.animation);
+ $("#iphone").style.setProperty("--radius",$("#radius").value+"px");
+}
+function saveState(){localStorage.setItem("biospace_iphone_studio",JSON.stringify(state));}
+function escapeHtml(value){
+ return String(value ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+function normalizeUrl(value){
+ let url=String(value||"").trim();
+ if(!url) return "";
+ if(!/^https?:\/\//i.test(url)) url="https://"+url;
+ try{
+   const u=new URL(url);
+   if(!["http:","https:"].includes(u.protocol)) return "";
+   return u.href;
+ }catch{return "";}
+}
+function openLink(url){
+ const safe=normalizeUrl(url);
+ if(!safe){ alert("Fadlan geli URL sax ah, tusaale: https://tiktok.com/@username"); return; }
+ window.open(safe,"_blank","noopener,noreferrer");
+}
+function editLink(i){
+ const l=state.links[i];
+ const title=prompt("Link name",l.title);
+ if(title===null)return;
+ const url=prompt("URL",l.url||"https://");
+ if(url===null)return;
+ const safe=normalizeUrl(url);
+ if(!safe){alert("URL-ka sax ma aha.");return;}
+ const desc=prompt("Description",l.desc);
+ if(desc===null)return;
+ const icon=prompt("Icon / emoji",l.icon||"✦");
+ if(icon===null)return;
+ const image=prompt("Image URL (optional)",l.image||"");
+ if(image===null)return;
+ l.title=title.trim()||"Untitled Link";
+ l.url=safe;
+ l.desc=desc.trim();
+ l.icon=icon.trim()||"✦";
+ l.image=image.trim();
+ saveState();
+ renderEditors();
+ render();
+}
+function showLinkMenu(i){
+ const l=state.links[i];
+ const action=prompt(
+   `${l.title}\n\n1 = Open link\n2 = Edit link\n3 = Delete link\n\nDooro 1, 2 ama 3`,
+   "1"
+ );
+ if(action==="1") openLink(l.url);
+ else if(action==="2") editLink(i);
+ else if(action==="3"){
+   if(confirm(`Delete "${l.title}"?`)){
+     state.links.splice(i,1);
+     saveState(); renderEditors(); render();
+   }
+ }
+}
+function renderEditors(){
+ const box=$("#linkEditor");box.innerHTML="";
+ state.links.forEach((l,i)=>{
+  const row=document.createElement("div");row.className="linkrow";
+  row.innerHTML=`<div class="drag">☷</div>
+   <div class="linkicon">${escapeHtml(l.icon)}</div>
+   <div class="linkinfo"><strong>${escapeHtml(l.title)}</strong><small>${escapeHtml(l.desc)}</small><small style="display:block;color:#6f6f7c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(l.url||"No URL")}</small></div>
+   <button class="mini edit">Edit</button><button class="mini open">Open</button><button class="mini del">Delete</button>`;
+  row.querySelector(".edit").onclick=()=>editLink(i);
+  row.querySelector(".open").onclick=()=>openLink(l.url);
+  row.querySelector(".del").onclick=()=>{
+    if(confirm(`Delete "${l.title}"?`)){
+      state.links.splice(i,1);saveState();if(saved){
+  if(saved.name)$("#name").value=saved.name;
+  if(saved.username)$("#username").value=saved.username;
+  if(saved.bio)$("#bio").value=saved.bio;
+  if(saved.avatar)$("#pAvatar").innerHTML=`<img src="${saved.avatar}" alt="">`;
+  if(saved.animation!==undefined){state.animation=saved.animation;}
+  if(saved.footer!==undefined){state.footer=saved.footer;}
+}
+renderEditors();render();
+    }
+  };
+  box.appendChild(row);
+ });
+}
+$$(".nav button").forEach(b=>b.onclick=()=>{
+ $$(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");
+ $$(".section").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.page).classList.add("active");
+ $("#pageTitle").textContent=b.textContent.trim();
+});
+["name","username","bio"].forEach(id=>$("#"+id).addEventListener("input",()=>{saveState();render()}));
+$("#avatar").addEventListener("change",e=>{
+ const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{$("#pAvatar").innerHTML=`<img src="${r.result}" alt="">`;state.avatar=r.result;saveState();render()};r.readAsDataURL(f);
+});
+$$("[data-switch]").forEach(sw=>sw.onclick=()=>{
+ sw.classList.toggle("on");const k=sw.dataset.switch;state[k]=sw.classList.contains("on");render();
+});
+$("#addLink").onclick=()=>{
+ const title=prompt("Link name","New Link");if(!title)return;
+ const desc=prompt("Short description","Open my link")||"";
+ const icon=prompt("Icon","✦")||"✦";
+ const image=prompt("Image URL (optional)","")||"";
+ const url=prompt("URL","https://");
+ if(!url)return;
+ const safe=normalizeUrl(url);
+ if(!safe){alert("URL-ka sax ma aha.");return;}
+ state.links.push({title,desc,icon,url:safe,image});saveState();renderEditors();render();
+};
+const themes={
+ purple:["#a855f7","#ec4899"],ocean:["#06b6d4","#3b82f6"],lime:["#84cc16","#22c55e"],sunset:["#f97316","#ef4444"],ice:["#e0e7ff","#38bdf8"]
+};
+$$(".swatch").forEach(s=>s.onclick=()=>{const [a,b]=themes[s.dataset.theme];$("#accent").value=a;$("#accent2").value=b;applyColors(a,b)});
+function applyColors(a,b){document.documentElement.style.setProperty("--accent",a);document.documentElement.style.setProperty("--accent2",b);render()}
+$("#accent").oninput=e=>applyColors(e.target.value,$("#accent2").value);
+$("#accent2").oninput=e=>applyColors($("#accent").value,e.target.value);
+$("#brightness").oninput=e=>{const n=Number(e.target.value);document.documentElement.style.setProperty("--preview-bg",`rgb(${Math.max(2,n/3)},${Math.max(2,n/3)},${Math.max(5,n)})`)};
+$("#radius").oninput=e=>{$$(".plink").forEach(x=>x.style.borderRadius=e.target.value+"px")};
+$("#smallPhone").onclick=()=>{$("#iphone").classList.remove("large");$("#iphone").classList.add("small")};
+$("#largePhone").onclick=()=>{$("#iphone").classList.remove("small");$("#iphone").classList.add("large")};
+$("#device").onchange=e=>{$(".iphone").style.height=e.target.value.includes("15")?"750px":e.target.value.includes("14")?"735px":"700px"};
+$("#applySocial").onclick=()=>{
+ const vals=$$(".socialInput").map(x=>x.value);$("#socials").innerHTML=vals.map(v=>`<div class="social">${v||"•"}</div>`).join("");
+};
+function publicProfileUrl(){
+ const username=encodeURIComponent($("#username").value.replace(/^@/,"").trim()||"mofaarah");
+ const base=window.location.href.split("?")[0].split("#")[0];
+ return `${base}?profile=${username}`;
+}
+$("#shareBtn").onclick=async()=>{
+ // Save the current Studio state, including all links, before sharing.
+ saveState();
+ const url=publicProfileUrl();
+ try{
+   await navigator.clipboard.writeText(url);
+   alert("Profile link copied!\n\n"+url);
+ }catch{
+   prompt("Copy your profile link:",url);
+ }
+};
+
+function publicMode(){
+ const params=new URLSearchParams(window.location.search);
+ if(!params.get("profile"))return;
+
+ document.body.classList.add("public-profile-mode");
+
+ const savedProfile=JSON.parse(localStorage.getItem("biospace_iphone_studio")||"null");
+ if(!savedProfile)return;
+
+ const name=savedProfile.name||"Mofaarah";
+ const username=savedProfile.username||params.get("profile");
+ const bio=savedProfile.bio||"";
+ const defaultPublicLinks=[
+   {title:"TikTok",desc:"Follow me on TikTok",icon:"♪",url:"https://www.tiktok.com/",image:""},
+   {title:"Instagram",desc:"My latest photos",icon:"◎",url:"https://www.instagram.com/",image:""},
+   {title:"YouTube",desc:"Watch my videos",icon:"▶",url:"https://www.youtube.com/",image:""},
+   {title:"Snapchat",desc:"Add me on Snapchat",icon:"👻",url:"https://www.snapchat.com/",image:""},
+   {title:"Discord",desc:"Join my community",icon:"◇",url:"https://discord.com/",image:""}
+ ];
+ const links=(Array.isArray(savedProfile.links)&&savedProfile.links.length)
+   ? savedProfile.links
+   : defaultPublicLinks;
+
+ $("#publicName").textContent=name+" ✦";
+ $("#publicHandle").textContent="@"+String(username).replace(/^@/,"");
+ $("#publicBio").textContent=bio;
+
+ const avatar=$("#publicAvatar");
+ if(savedProfile.avatar){
+   avatar.innerHTML=`<img src="${savedProfile.avatar}" alt="">`;
+ }else{
+   avatar.textContent=(name.trim()[0]||"M").toUpperCase();
+ }
+
+ const socials=$("#publicSocials");
+ socials.innerHTML="";
+ const socialItems=[
+   {icon:"◎",label:"Instagram",url:"https://www.instagram.com/"},
+   {icon:"♪",label:"TikTok",url:"https://www.tiktok.com/"},
+   {icon:"▶",label:"YouTube",url:"https://www.youtube.com/"},
+   {icon:"◇",label:"Discord",url:"https://discord.com/"},
+   {icon:"✦",label:"Website",url:"https://www.google.com/"}
+ ];
+ socialItems.forEach(item=>{
+   const b=document.createElement("a");
+   b.className="publicSocial";
+   b.href=item.url;
+   b.target="_blank";
+   b.rel="noopener noreferrer";
+   b.title=item.label;
+   b.setAttribute("aria-label",item.label);
+   b.textContent=item.icon;
+   socials.appendChild(b);
+ });
+
+ const box=$("#publicLinks");
+ box.innerHTML="";
+ links.forEach(l=>{
+   const a=document.createElement("a");
+   a.className="publicLink";
+   a.href=normalizeUrl(l.url)||"#";
+   a.target="_blank";
+   a.rel="noopener noreferrer";
+   a.innerHTML=`
+     <div class="publicLinkPic">${l.image?`<img src="${escapeHtml(l.image)}" alt="">`:escapeHtml(l.icon||"✦")}</div>
+     <div class="publicLinkCopy">
+       <strong>${escapeHtml(l.title||"Untitled Link")}</strong>
+       <small>${escapeHtml(l.desc||"")}</small>
+     </div>
+     <div class="publicDots">•••</div>`;
+   box.appendChild(a);
+ });
+}
+publicMode();
+$("#resetBtn").onclick=()=>{if(confirm("Reset this demo?")){localStorage.removeItem("biospace_iphone_studio");location.reload()}};
+renderEditors();render();
+</script>
+</body>
+</html>
