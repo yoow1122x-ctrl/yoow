@@ -199,36 +199,27 @@ body.public-profile-mode .profilelinks{
 
 /* CLEAN PUBLIC PROFILE — completely separate from iPhone preview */
 #publicProfileRoot{display:none}
-body.public-profile-mode{background:#07070b!important;overflow-y:auto!important;overflow-x:hidden!important}
+body.public-profile-mode{background:#050507!important;overflow-y:auto!important;overflow-x:hidden!important}
 body.public-profile-mode .app{display:none!important}
-body.public-profile-mode #publicProfileRoot{
-  display:block!important;
-  width:100%!important;
-  min-height:100vh!important;
-  padding:48px 20px 40px!important;
-  box-sizing:border-box!important;
-  background:#07070b!important;
-}
-.publicProfileCard{
-  width:min(100%,520px);
-  margin:0 auto;
-  text-align:center;
-}
-.publicAvatar{
-  width:96px;height:96px;border-radius:50%;
-  margin:0 auto 16px;
-  display:grid;place-items:center;
-  font-size:34px;font-weight:900;color:#fff;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border:3px solid #fff;
-  box-shadow:0 0 35px color-mix(in srgb,var(--accent),transparent 55%);
-  overflow:hidden;
-}
+body.public-profile-mode #publicProfileRoot{display:block!important;min-height:100svh;padding:env(safe-area-inset-top) 14px calc(24px + env(safe-area-inset-bottom));}
+.publicPhone{width:min(100%,430px);min-height:calc(100svh - 20px);margin:10px auto 0;border:6px solid #17171d;border-radius:38px;overflow:hidden;position:relative;background:#08080b;box-shadow:0 30px 90px #000b;}
+.publicIsland{position:absolute;z-index:5;top:9px;left:50%;transform:translateX(-50%);width:92px;height:25px;background:#020203;border-radius:18px}
+.publicPhonebar{height:48px;padding:12px 20px 0;display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#fff;position:relative;z-index:4}
+.publicScreen{min-height:calc(100svh - 68px);padding:18px 16px 30px;text-align:center;background:radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--public-accent,#a855f7) 28%,transparent),transparent 34%),radial-gradient(circle at 90% 65%,color-mix(in srgb,var(--public-accent2,#ec4899) 22%,transparent),transparent 38%),var(--public-bg,#07070b);}
+.publicProfileCard{width:100%;margin:0 auto}
+.publicAvatar{width:96px;height:96px;border-radius:50%;margin:12px auto 14px;border:3px solid #fff;box-shadow:0 15px 45px color-mix(in srgb,var(--public-accent,#a855f7) 45%,transparent);overflow:hidden;background:linear-gradient(135deg,var(--public-accent,#a855f7),var(--public-accent2,#ec4899));display:grid;place-items:center;color:#fff;font-size:30px;font-weight:900}
 .publicAvatar img{width:100%;height:100%;object-fit:cover}
-.publicName{font-size:28px;font-weight:900;color:#fff}
-.publicHandle{margin-top:5px;color:#999;font-size:14px}
-.publicBio{margin:14px auto 18px;color:#ddd;font-size:14px;line-height:1.5;max-width:360px}
-.publicSocials{display:flex;justify-content:center;gap:10px;margin:0 auto 24px}
+.publicName{font-size:27px;font-weight:900;color:#fff;letter-spacing:-.4px}
+.publicHandle{margin-top:5px;color:#9b9ba5;font-size:13px}
+.publicBio{margin:12px auto 15px;color:#ddd;font-size:14px;line-height:1.5;max-width:360px}
+.publicSocials{display:flex;justify-content:center;gap:9px;margin:0 auto 18px;flex-wrap:wrap}
+.publicSocial{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#ffffff10;border:1px solid #ffffff18;color:#fff;text-decoration:none;font-weight:900}
+.publicLinks{display:grid;gap:11px;width:100%;margin:16px auto 0}
+.publicLink{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 12px;border-radius:18px;background:#ffffff10;border:1px solid #ffffff18;color:#fff;text-decoration:none;text-align:left;box-shadow:0 10px 28px #0003}
+.publicLinkPic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none;background:linear-gradient(135deg,var(--public-accent,#a855f7),var(--public-accent2,#ec4899));font-weight:900;overflow:hidden}
+.publicLinkPic img{width:100%;height:100%;object-fit:cover}
+.publicLinkCopy{flex:1;min-width:0}.publicLinkCopy strong{display:block;font-size:15px}.publicLinkCopy small{display:block;color:#aaa;font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.publicDots{color:#aaa;letter-spacing:2px}.publicFooter{margin-top:20px;color:#666;font-size:11px}
+@media(max-width:480px){.publicPhone{margin:0 auto;border-width:0;border-radius:0;min-height:100svh;box-shadow:none}.publicScreen{min-height:calc(100svh - 48px);padding-left:14px;padding-right:14px}.publicPhonebar{padding-left:17px;padding-right:17px}}
 .publicSocial{
   width:42px;height:42px;border-radius:50%;
   display:grid;place-items:center;
@@ -520,7 +511,7 @@ body{min-width:0;padding:0!important;}
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const saved=JSON.parse(localStorage.getItem("biospace_iphone_studio")||"null");
-const state=saved||{animation:true,glass:true,footer:true,name:"Mofaarah",username:"mofaarah",bio:"Creator • Video Editor • Music",avatar:"",links:[
+const state=saved||{animation:true,glass:true,footer:true,name:"Mofaarah",username:"mofaarah",bio:"Creator • Video Editor • Music",avatar:"",accent:"#a855f7",accent2:"#ec4899",bg:"#07070b",links:[
  {title:"TikTok",desc:"Follow me on TikTok",icon:"♪",url:"https://www.tiktok.com/",image:""},
  {title:"Instagram",desc:"My latest photos",icon:"◎",url:"https://www.instagram.com/",image:""},
  {title:"YouTube",desc:"Watch my videos",icon:"▶",url:"https://www.youtube.com/",image:""},
@@ -657,9 +648,9 @@ $("#saveProfileBtn").onclick=async()=>{
   state.username=$("#username").value.trim().replace(/^@/,"").replace(/\s+/g,"-").toLowerCase()||"mofaarah";
   state.bio=$("#bio").value.trim();
   saveState();
-  await cloudSave(true);
+  const online=await cloudSave(true);
   render();
-  alert("Profile saved successfully!");
+  if(online) alert("Profile saved online successfully!\n\nNow the same profile link can be opened on iPhone and other devices.");
 };
 $("#name").value=state.name||"Mofaarah";$("#username").value=state.username||"mofaarah";$("#bio").value=state.bio||"";
 $("#avatar").addEventListener("change",e=>{
@@ -697,10 +688,10 @@ const themes={
  purple:["#a855f7","#ec4899"],ocean:["#06b6d4","#3b82f6"],lime:["#84cc16","#22c55e"],sunset:["#f97316","#ef4444"],ice:["#e0e7ff","#38bdf8"]
 };
 $$(".swatch").forEach(s=>s.onclick=()=>{const [a,b]=themes[s.dataset.theme];$("#accent").value=a;$("#accent2").value=b;applyColors(a,b)});
-function applyColors(a,b){document.documentElement.style.setProperty("--accent",a);document.documentElement.style.setProperty("--accent2",b);render()}
+function applyColors(a,b){state.accent=a;state.accent2=b;document.documentElement.style.setProperty("--accent",a);document.documentElement.style.setProperty("--accent2",b);saveState();cloudSave(false);render()}
 $("#accent").oninput=e=>applyColors(e.target.value,$("#accent2").value);
 $("#accent2").oninput=e=>applyColors($("#accent").value,e.target.value);
-$("#brightness").oninput=e=>{const n=Number(e.target.value);document.documentElement.style.setProperty("--preview-bg",`rgb(${Math.max(2,n/3)},${Math.max(2,n/3)},${Math.max(5,n)})`)};
+$("#brightness").oninput=e=>{const n=Number(e.target.value);const v=Math.max(5,n);state.bg=`rgb(${Math.round(v/3)},${Math.round(v/3)},${Math.round(v)})`;document.documentElement.style.setProperty("--preview-bg",state.bg);saveState();cloudSave(false)};
 $("#radius").oninput=e=>{$$(".plink").forEach(x=>x.style.borderRadius=e.target.value+"px")};
 $("#smallPhone").onclick=()=>{$("#iphone").classList.remove("large");$("#iphone").classList.add("small")};
 $("#largePhone").onclick=()=>{$("#iphone").classList.remove("small");$("#iphone").classList.add("large")};
@@ -732,7 +723,7 @@ function profilePayload(){
     bio:state.bio||"",
     avatar:state.avatar||"",
     links:Array.isArray(state.links)?state.links.map(l=>({title:l.title||"Link",desc:l.desc||"",icon:l.icon||"✦",url:l.url||"",image:l.image||""})):[],
-    design:{accent:state.accent||"#8b5cf6",accent2:state.accent2||"#ec4899"}
+    design:{accent:state.accent||"#8b5cf6",accent2:state.accent2||"#ec4899",bg:state.bg||"#07070b"}
   };
 }
 async function cloudSave(showError=false){
@@ -753,7 +744,7 @@ async function cloudSave(showError=false){
 }
 function publicProfileUrl(){
   const username=encodeURIComponent((state.username||"mofaarah").replace(/^@/,""));
-  return `${window.location.href.split("?")[0].split("#")[0]}?profile=${username}`;
+  return `${window.location.origin}${window.location.pathname}?profile=${username}`;
 }
 $("#shareBtn").onclick=async()=>{
   saveState();
@@ -777,35 +768,49 @@ async function publicMode(){
  const params=new URLSearchParams(window.location.search);
  if(!params.get("profile"))return;
  document.body.classList.add("public-profile-mode");
- const username=params.get("profile");
- let savedProfile=await loadPublicProfile(username);
+ const root=document.querySelector("#publicProfileRoot");
+ root.innerHTML=`<div class="publicPhone"><div class="publicIsland"></div><div class="publicPhonebar"><span id="publicTime">9:41</span><span>● ● ▮</span></div><div class="publicScreen"><div class="publicProfileCard"><div class="publicAvatar" id="publicAvatar">M</div><div class="publicName" id="publicName">Loading…</div><div class="publicHandle" id="publicHandle"></div><div class="publicBio" id="publicBio"></div><div class="publicSocials" id="publicSocials"></div><div class="publicLinks" id="publicLinks"></div><div class="publicFooter">BioSpace • Everything about you.</div></div></div></div>`;
+ const username=String(params.get("profile")||"").replace(/^@/,"").trim().toLowerCase();
+ const savedProfile=await loadPublicProfile(username);
  if(!savedProfile){
-   document.body.innerHTML=`<div style="min-height:100vh;display:grid;place-items:center;background:#07070b;color:#fff;font-family:system-ui;padding:24px;text-align:center"><div><div style="font-size:42px">🔗</div><h2>Profile not found</h2><p style="color:#aaa">This public profile has not been saved online yet.</p></div></div>`;
+   root.innerHTML=`<div style="min-height:100svh;display:grid;place-items:center;background:#07070b;color:#fff;font-family:system-ui;padding:24px;text-align:center"><div><div style="font-size:42px">🔗</div><h2>Profile not found</h2><p style="color:#aaa;max-width:320px">Profile-kan lama kaydin online. Creator-ka ha gujiyo “Share profile” kadib marka uu Save sameeyo.</p></div></div>`;
    return;
  }
+ const design=savedProfile.design||{};
+ document.documentElement.style.setProperty("--public-accent",design.accent||"#a855f7");
+ document.documentElement.style.setProperty("--public-accent2",design.accent2||"#ec4899");
+ document.documentElement.style.setProperty("--public-bg",design.bg||"#07070b");
  const name=savedProfile.name||"Mofaarah";
  const user=savedProfile.username||username;
  const bio=savedProfile.bio||"";
- const links=(Array.isArray(savedProfile.links)&&savedProfile.links.length)?savedProfile.links:[];
+ const links=Array.isArray(savedProfile.links)?savedProfile.links:[];
  $("#publicName").textContent=name+" ✦";
  $("#publicHandle").textContent="@"+String(user).replace(/^@/,"");
  $("#publicBio").textContent=bio;
  const avatar=$("#publicAvatar");
- if(savedProfile.avatar) avatar.innerHTML=`<img src="${escapeHtml(savedProfile.avatar)}" alt="">`;
+ if(savedProfile.avatar) avatar.innerHTML=`<img src="${escapeHtml(savedProfile.avatar)}" alt="${escapeHtml(name)}">`;
  else avatar.textContent=(name.trim()[0]||"M").toUpperCase();
- const socials=$("#publicSocials");socials.innerHTML="";
- [
-  {icon:"◎",label:"Instagram",url:"https://www.instagram.com/"},
-  {icon:"♪",label:"TikTok",url:"https://www.tiktok.com/"},
-  {icon:"▶",label:"YouTube",url:"https://www.youtube.com/"},
-  {icon:"◇",label:"Discord",url:"https://discord.com/"},
-  {icon:"✦",label:"Website",url:"https://www.google.com/"}
- ].forEach(item=>{const b=document.createElement("a");b.className="publicSocial";b.href=item.url;b.target="_blank";b.rel="noopener noreferrer";b.title=item.label;b.setAttribute("aria-label",item.label);b.textContent=item.icon;socials.appendChild(b)});
- const box=$("#publicLinks");box.innerHTML="";
- links.forEach(l=>{const a=document.createElement("a");a.className="publicLink";a.href=normalizeUrl(l.url)||"#";a.target="_blank";a.rel="noopener noreferrer";a.innerHTML=`<div class="publicLinkPic">${l.image?`<img src="${escapeHtml(l.image)}" alt="">`:escapeHtml(l.icon||"✦")}</div><div class="publicLinkCopy"><strong>${escapeHtml(l.title||"Untitled Link")}</strong><small>${escapeHtml(l.desc||"")}</small></div><div class="publicDots">•••</div>`;box.appendChild(a)});
+ const socials=$("#publicSocials"); socials.innerHTML="";
+ // Show the creator's actual saved links as social shortcuts instead of hardcoded accounts.
+ links.slice(0,6).forEach(l=>{
+   const b=document.createElement("a"); b.className="publicSocial"; b.href=normalizeUrl(l.url)||"#"; b.target="_blank"; b.rel="noopener noreferrer"; b.title=l.title||"Link"; b.setAttribute("aria-label",l.title||"Link"); b.textContent=l.icon||"✦"; socials.appendChild(b);
+ });
+ const box=$("#publicLinks"); box.innerHTML="";
+ links.forEach(l=>{
+   const safe=normalizeUrl(l.url);
+   if(!safe)return;
+   const a=document.createElement("a"); a.className="publicLink"; a.href=safe; a.target="_blank"; a.rel="noopener noreferrer";
+   a.innerHTML=`<div class="publicLinkPic">${l.image?`<img src="${escapeHtml(l.image)}" alt="">`:escapeHtml(l.icon||"✦")}</div><div class="publicLinkCopy"><strong>${escapeHtml(l.title||"Untitled Link")}</strong><small>${escapeHtml(l.desc||safe)}</small></div><div class="publicDots">•••</div>`;
+   box.appendChild(a);
+ });
+ if(!links.length) box.innerHTML='<div style="color:#aaa;padding:20px">No links added yet.</div>';
 }
+
 publicMode();
+(function updatePublicClock(){const el=document.getElementById("publicTime");if(el)el.textContent=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});setTimeout(updatePublicClock,30000)})();
 $("#resetBtn").onclick=()=>{if(confirm("Reset this demo?")){localStorage.removeItem("biospace_iphone_studio");location.reload()}};
+if(state.accent) document.documentElement.style.setProperty("--accent",state.accent);
+if(state.accent2) document.documentElement.style.setProperty("--accent2",state.accent2);
 renderEditors();render();
 </script>
 
