@@ -282,6 +282,7 @@ body.public-profile-mode #publicProfileRoot{
       <h3>Profile identity</h3>
       <div class="grid2">
         <div class="field"><label>Display name</label><input class="input" id="name" value="Mofaarah"></div>
+        <button class="btn primary" id="saveProfileBtn" type="button">💾 Save profile</button>
         <div class="field"><label>Username</label><input class="input" id="username" value="mofaarah"></div>
       </div>
       <div class="field"><label>Bio</label><textarea class="textarea" id="bio">Creator • Video Editor • Music</textarea></div>
@@ -523,11 +524,29 @@ $$(".nav button").forEach(b=>b.onclick=()=>{
  $$(".section").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.page).classList.add("active");
  $("#pageTitle").textContent=b.textContent.trim();
 });
-["name","username","bio"].forEach(id=>$("#"+id).addEventListener("input",()=>{saveState();render()}));
+["name","username","bio"].forEach(id=>$("#"+id).addEventListener("input",()=>{render()}));
+$("#saveProfileBtn").onclick=()=>{
+  state.name=$("#name").value.trim()||"Mofaarah";
+  state.username=$("#username").value.trim().replace(/^@/,"").replace(/\s+/g,"-").toLowerCase()||"mofaarah";
+  state.bio=$("#bio").value.trim();
+  saveState();
+  render();
+  alert("Profile saved successfully!");
+};
 $("#name").value=state.name||"Mofaarah";$("#username").value=state.username||"mofaarah";$("#bio").value=state.bio||"";
 $("#avatar").addEventListener("change",e=>{
  const f=e.target.files[0];if(!f)return;const r=new FileReader();
- r.onload=()=>{$("#pAvatar").innerHTML=`<img src="${r.result}" alt="">`;state.avatar=r.result;saveState();render()};r.readAsDataURL(f);
+ r.onload=()=>{
+  const img=new Image();
+  img.onload=()=>{
+    const max=320, scale=Math.min(1,max/Math.max(img.width,img.height));
+    const c=document.createElement("canvas"); c.width=Math.max(1,Math.round(img.width*scale)); c.height=Math.max(1,Math.round(img.height*scale));
+    const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,c.width,c.height);
+    const compact=c.toDataURL("image/jpeg",0.72);
+    $("#pAvatar").innerHTML=`<img src="${compact}" alt="">`;state.avatar=compact;saveState();render();
+  };
+  img.src=r.result;
+};r.readAsDataURL(f);
 });
 $$("[data-switch]").forEach(sw=>sw.onclick=()=>{
  sw.classList.toggle("on");const k=sw.dataset.switch;state[k]=sw.classList.contains("on");render();
@@ -562,7 +581,7 @@ function encodeProfileData(obj){return btoa(unescape(encodeURIComponent(JSON.str
 function decodeProfileData(str){try{return JSON.parse(decodeURIComponent(escape(atob(str))))}catch{return null}}
 function publicProfileUrl(){
  saveState();
- const payload={name:state.name,username:state.username,bio:state.bio,avatar:state.avatar||"",links:state.links};
+ const payload={name:state.name||"Mofaarah",username:state.username||"mofaarah",bio:state.bio||"",avatar:state.avatar||"",links:Array.isArray(state.links)?state.links.map(l=>({title:l.title||"Link",desc:l.desc||"",icon:l.icon||"✦",url:l.url||"",image:l.image||""})):[]};
  const username=encodeURIComponent(state.username||"mofaarah");
  const base=window.location.href.split("?")[0].split("#")[0];
  return `${base}?profile=${username}#data=${encodeProfileData(payload)}`;
