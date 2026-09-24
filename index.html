@@ -53,8 +53,101 @@ radial-gradient(circle at 90% 20%,#db277755,transparent 30%),var(--preview-bg);p
 @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .animate-off *{animation:none!important;transition:none!important}
-@media(max-width:1200px){.app{grid-template-columns:220px 1fr}.previewPanel{display:none}}
-@media(max-width:760px){.app{display:block}.sidebar{height:auto;position:relative;border:0;padding:10px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.sidebottom{display:none}.main{padding:16px}.grid2{grid-template-columns:1fr}.top{align-items:flex-start}.stats{grid-template-columns:1fr 1fr}.previewPanel{display:flex;position:relative;height:auto;border:0}.iphone{width:340px}}
+@media(max-width:1200px){
+  .app{grid-template-columns:220px minmax(0,1fr)}
+  .previewPanel{display:none}
+  .main{max-width:none}
+}
+
+/* iPhone / mobile web layout */
+@media(max-width:760px){
+  :root{--mobile-nav:76px}
+  html{width:100%;overflow-x:hidden;background:var(--bg)}
+  body{width:100%;min-width:0;overflow-x:hidden;padding-bottom:calc(var(--mobile-nav) + env(safe-area-inset-bottom));}
+  .app{display:block;width:100%;min-height:100svh;overflow-x:hidden}
+
+  .sidebar{
+    position:fixed;z-index:1000;left:0;right:0;bottom:0;top:auto;width:100%;height:calc(var(--mobile-nav) + env(safe-area-inset-bottom));
+    padding:7px 8px env(safe-area-inset-bottom);border:0;border-top:1px solid rgba(255,255,255,.10);
+    background:rgba(10,10,15,.90);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+    box-shadow:0 -12px 40px rgba(0,0,0,.35),0 -2px 18px rgba(168,85,247,.08);
+    border-radius:22px 22px 0 0;
+  }
+  .brand,.sidebottom{display:none}
+  .nav{height:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;overflow:visible}
+  .nav button{
+    position:relative;isolation:isolate;min-width:0;width:100%;height:62px;padding:6px 2px;border-radius:17px;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-align:center;
+    font-size:20px;color:#777887;line-height:1;transition:transform .28s cubic-bezier(.2,.8,.2,1),color .28s,background .28s,box-shadow .28s;
+    overflow:hidden;-webkit-tap-highlight-color:transparent;
+  }
+  .nav button::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:0;transform:scale(.55);transition:opacity .28s,transform .32s;z-index:-1}
+  .nav button::after{content:"";position:absolute;left:50%;bottom:4px;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:0;transform:translateX(-50%) scale(.3);box-shadow:0 0 14px var(--accent);transition:.28s}
+  .nav button span{display:block;font-size:9px;font-weight:800;letter-spacing:.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60px;transition:transform .28s}
+  .nav button:hover{color:#fff;transform:translateY(-2px)}
+  .nav button:hover::before{opacity:.10;transform:scale(1)}
+  .nav button.active{color:#fff;background:linear-gradient(135deg,rgba(168,85,247,.22),rgba(236,72,153,.14));box-shadow:0 7px 24px rgba(168,85,247,.20),inset 0 0 0 1px rgba(255,255,255,.09);transform:translateY(-3px)}
+  .nav button.active::before{opacity:.16;transform:scale(1)}
+  .nav button.active::after{opacity:1;transform:translateX(-50%) scale(1);animation:navDot 1.8s ease-in-out infinite}
+  .nav button.active span{transform:translateY(-1px)}
+  .nav button:active{transform:scale(.91)}
+  @keyframes navDot{0%,100%{box-shadow:0 0 5px var(--accent)}50%{box-shadow:0 0 16px var(--accent),0 0 28px color-mix(in srgb,var(--accent) 40%,transparent)}}
+
+  .main{width:100%;max-width:none;padding:calc(12px + env(safe-area-inset-top)) 12px 20px;margin:0}
+  .top{position:sticky;top:0;z-index:50;margin:0 -12px 14px;padding:10px 12px 12px;min-height:62px;align-items:center;
+    background:rgba(7,7,11,.84);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.06)}
+  .eyebrow{font-size:9px;letter-spacing:1.5px}
+  .title{font-size:22px;margin:2px 0}
+  .actions{gap:6px}
+  .actions .btn{padding:9px 10px;border-radius:12px;font-size:12px}
+  .actions #resetBtn{display:none}
+
+  .grid2{grid-template-columns:1fr;gap:0}
+  .card{padding:15px;border-radius:19px;margin-bottom:12px}
+  .card h3{font-size:15px;margin-bottom:13px}
+  .stats{grid-template-columns:1fr 1fr;gap:8px}
+  .stat{padding:13px;border-radius:15px;min-width:0}
+  .stat b{font-size:20px}
+  .stat span{font-size:11px}
+  .field{margin-bottom:12px}
+  .input,.textarea,.select{font-size:16px;min-height:46px;border-radius:13px}
+  .textarea{min-height:100px}
+  .btn{min-height:44px;border-radius:13px;padding:10px 13px}
+  .switchrow{min-height:54px}
+  .swatches{gap:10px}
+  .swatch{width:40px;height:40px}
+
+  .linkrow{padding:9px;gap:8px;border-radius:14px;flex-wrap:nowrap}
+  .linkinfo{min-width:0}
+  .linkinfo strong,.linkinfo small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .linkrow .mini{padding:8px;flex:none}
+
+  /* Keep the live iPhone preview useful on mobile without breaking the editor. */
+  .previewPanel{display:flex;position:relative;width:100%;height:auto;min-height:0;padding:18px 0 8px;border:0;background:transparent;overflow:visible}
+  .previewHead{display:none}
+  .iphone{width:min(92vw,390px);height:min(780px,145vw);min-height:650px;border-width:7px;border-radius:43px;margin:0 auto;transform:none!important}
+  .screen{border-radius:34px;padding:58px 17px 18px}
+  .phonebar{left:18px;right:18px}
+
+  /* Prevent iOS Safari zoom when focusing inputs and keep controls touch friendly. */
+  input,textarea,select{font-size:16px!important}
+  button,a,.nav button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+}
+
+@media(max-width:390px){
+  .main{padding-left:10px;padding-right:10px}
+  .top{margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}
+  .stats{gap:6px}
+  .stat{padding:11px}
+  .iphone{width:94vw;min-height:620px}
+}
+
+@media(orientation:landscape) and (max-width:900px){
+  .sidebar{height:64px}
+  .nav button{height:52px}
+  body{padding-bottom:64px}
+  .iphone{height:82vh;min-height:520px}
+}
 
 /* SHARED PROFILE MODE: no phone mockup, no Dynamic Island, no status bar, no top color */
 body.public-profile-mode{
@@ -117,36 +210,27 @@ body.public-profile-mode .profilelinks{
 
 /* CLEAN PUBLIC PROFILE — completely separate from iPhone preview */
 #publicProfileRoot{display:none}
-body.public-profile-mode{background:#07070b!important;overflow-y:auto!important;overflow-x:hidden!important}
+body.public-profile-mode{background:#050507!important;overflow-y:auto!important;overflow-x:hidden!important}
 body.public-profile-mode .app{display:none!important}
-body.public-profile-mode #publicProfileRoot{
-  display:block!important;
-  width:100%!important;
-  min-height:100vh!important;
-  padding:48px 20px 40px!important;
-  box-sizing:border-box!important;
-  background:#07070b!important;
-}
-.publicProfileCard{
-  width:min(100%,520px);
-  margin:0 auto;
-  text-align:center;
-}
-.publicAvatar{
-  width:96px;height:96px;border-radius:50%;
-  margin:0 auto 16px;
-  display:grid;place-items:center;
-  font-size:34px;font-weight:900;color:#fff;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  border:3px solid #fff;
-  box-shadow:0 0 35px color-mix(in srgb,var(--accent),transparent 55%);
-  overflow:hidden;
-}
+body.public-profile-mode #publicProfileRoot{display:block!important;min-height:100svh;padding:env(safe-area-inset-top) 14px calc(24px + env(safe-area-inset-bottom));}
+.publicPhone{width:min(100%,430px);min-height:calc(100svh - 20px);margin:10px auto 0;border:6px solid #17171d;border-radius:38px;overflow:hidden;position:relative;background:#08080b;box-shadow:0 30px 90px #000b;}
+.publicIsland{position:absolute;z-index:5;top:9px;left:50%;transform:translateX(-50%);width:92px;height:25px;background:#020203;border-radius:18px}
+.publicPhonebar{height:48px;padding:12px 20px 0;display:flex;justify-content:space-between;font-size:12px;font-weight:800;color:#fff;position:relative;z-index:4}
+.publicScreen{min-height:calc(100svh - 68px);padding:18px 16px 30px;text-align:center;background:radial-gradient(circle at 15% 8%,color-mix(in srgb,var(--public-accent,#a855f7) 28%,transparent),transparent 34%),radial-gradient(circle at 90% 65%,color-mix(in srgb,var(--public-accent2,#ec4899) 22%,transparent),transparent 38%),var(--public-bg,#07070b);}
+.publicProfileCard{width:100%;margin:0 auto}
+.publicAvatar{width:96px;height:96px;border-radius:50%;margin:12px auto 14px;border:3px solid #fff;box-shadow:0 15px 45px color-mix(in srgb,var(--public-accent,#a855f7) 45%,transparent);overflow:hidden;background:linear-gradient(135deg,var(--public-accent,#a855f7),var(--public-accent2,#ec4899));display:grid;place-items:center;color:#fff;font-size:30px;font-weight:900}
 .publicAvatar img{width:100%;height:100%;object-fit:cover}
-.publicName{font-size:28px;font-weight:900;color:#fff}
-.publicHandle{margin-top:5px;color:#999;font-size:14px}
-.publicBio{margin:14px auto 18px;color:#ddd;font-size:14px;line-height:1.5;max-width:360px}
-.publicSocials{display:flex;justify-content:center;gap:10px;margin:0 auto 24px}
+.publicName{font-size:27px;font-weight:900;color:#fff;letter-spacing:-.4px}
+.publicHandle{margin-top:5px;color:#9b9ba5;font-size:13px}
+.publicBio{margin:12px auto 15px;color:#ddd;font-size:14px;line-height:1.5;max-width:360px}
+.publicSocials{display:flex;justify-content:center;gap:9px;margin:0 auto 18px;flex-wrap:wrap}
+.publicSocial{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#ffffff10;border:1px solid #ffffff18;color:#fff;text-decoration:none;font-weight:900}
+.publicLinks{display:grid;gap:11px;width:100%;margin:16px auto 0}
+.publicLink{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 12px;border-radius:18px;background:#ffffff10;border:1px solid #ffffff18;color:#fff;text-decoration:none;text-align:left;box-shadow:0 10px 28px #0003}
+.publicLinkPic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none;background:linear-gradient(135deg,var(--public-accent,#a855f7),var(--public-accent2,#ec4899));font-weight:900;overflow:hidden}
+.publicLinkPic img{width:100%;height:100%;object-fit:cover}
+.publicLinkCopy{flex:1;min-width:0}.publicLinkCopy strong{display:block;font-size:15px}.publicLinkCopy small{display:block;color:#aaa;font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.publicDots{color:#aaa;letter-spacing:2px}.publicFooter{margin-top:20px;color:#666;font-size:11px}
+@media(max-width:480px){.publicPhone{margin:0 auto;border-width:0;border-radius:0;min-height:100svh;box-shadow:none}.publicScreen{min-height:calc(100svh - 48px);padding-left:14px;padding-right:14px}.publicPhonebar{padding-left:17px;padding-right:17px}}
 .publicSocial{
   width:42px;height:42px;border-radius:50%;
   display:grid;place-items:center;
@@ -238,9 +322,130 @@ body.public-profile-mode #publicProfileRoot{
 @media(prefers-reduced-motion:reduce){
   .publicSocial,.publicLink{animation:none!important;transition:none!important}
 }
+
+/* ===== BIO SPACE — IPHONE FIRST UI ===== */
+html,body{width:100%;max-width:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;}
+body{min-width:0;padding:0!important;}
+.app{padding:0!important;min-height:100svh;}
+.shell{display:block!important;width:100%;max-width:none;margin:0!important;}
+.sidebar{display:none!important;}
+.main{width:100%!important;min-width:0!important;margin:0!important;padding:0 0 calc(88px + env(safe-area-inset-bottom))!important;}
+.topbar{position:sticky;top:0;z-index:50;width:100%;height:auto!important;min-height:62px;padding:calc(8px + env(safe-area-inset-top)) 14px 8px!important;border-radius:0 0 20px 20px!important;border-left:0!important;border-right:0!important;border-top:0!important;}
+.topbar h1{font-size:19px!important;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .actions{gap:6px!important;}
+.topbar .actions .btn{min-height:40px!important;padding:9px 11px!important;border-radius:13px!important;}
+.topbar .actions .btn:not(.primary){display:none!important;}
+.page{display:none;width:100%;padding:14px!important;}
+.page.active{display:block;animation:rise .25s ease;}
+.grid{display:block!important;width:100%!important;}
+.grid>.card,.grid>.preview-wrap{width:100%!important;max-width:none!important;margin:0 0 14px!important;}
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;}
+.stat{padding:14px!important;border-radius:17px!important;min-width:0;}
+.stat b{font-size:22px!important;}
+.stat span{font-size:10px!important;}
+.card{padding:15px!important;border-radius:19px!important;min-width:0;}
+.card h2{font-size:18px!important;}
+.fields{gap:10px!important;}
+.field input,.field textarea,.field select{width:100%!important;min-height:48px!important;border-radius:14px!important;padding:11px 13px!important;font-size:16px!important;}
+.field textarea{min-height:105px!important;}
+.btn{min-height:46px!important;border-radius:14px!important;padding:10px 13px!important;}
+.profile-editor{grid-template-columns:1fr!important;text-align:center!important;}
+.big-avatar{margin:0 auto!important;width:105px!important;height:105px!important;}
+.preview-wrap{position:relative!important;top:auto!important;}
+.phone{width:100%!important;max-width:430px!important;margin:0 auto!important;min-height:720px!important;border-width:5px!important;border-radius:34px!important;}
+.profile{min-height:710px!important;padding:54px 16px 28px!important;}
+.public-link{min-height:58px!important;}
+.theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;}
+.modal{padding:12px!important;}
+.modalbox{width:100%!important;max-width:430px!important;max-height:88svh!important;overflow:auto!important;border-radius:23px!important;}
+.toast{bottom:calc(90px + env(safe-area-inset-bottom))!important;}
+@media(min-width:700px){.main{max-width:680px!important;margin:0 auto!important;border-left:1px solid rgba(255,255,255,.05);border-right:1px solid rgba(255,255,255,.05);}.page{padding:20px!important;}}
+
+
+/* ===== BioSpace Mega Studio upgrade ===== */
+.moreMobile{display:none!important}
+.nav{max-height:calc(100vh - 150px);overflow:auto;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}
+.nav button{transition:transform .25s,background .25s,color .25s,box-shadow .25s}.nav button:hover{transform:translateX(4px)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#ffffff0b;border:1px solid #ffffff10;color:#aaa;font-size:10px}
+.heroCard{padding:22px;border-radius:24px;background:linear-gradient(135deg,#ffffff0b,#ffffff03);border:1px solid var(--line);box-shadow:0 25px 70px #0004;overflow:hidden;position:relative}.heroCard:after{content:"";position:absolute;width:240px;height:240px;border-radius:50%;right:-100px;top:-100px;background:var(--accent);filter:blur(70px);opacity:.2}
+.kpiGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{padding:15px;border:1px solid var(--line);border-radius:18px;background:#ffffff05}.kpi b{font-size:24px;display:block}.kpi small{color:#999}
+.actionGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.actionCard{border:1px solid var(--line);background:#ffffff05;border-radius:18px;padding:15px;text-align:left;color:#fff;transition:.25s}.actionCard:hover{transform:translateY(-4px);background:#ffffff0b;box-shadow:0 15px 35px #0005}.actionCard strong{display:block;margin-top:8px}.actionCard span{font-size:12px;color:#999}
+.table{width:100%;border-collapse:separate;border-spacing:0 8px}.table th{font-size:11px;color:#888;text-align:left;padding:0 10px}.table td{padding:11px 10px;background:#ffffff05;border-top:1px solid #ffffff08;border-bottom:1px solid #ffffff08;font-size:13px}.table td:first-child{border-left:1px solid #ffffff08;border-radius:12px 0 0 12px}.table td:last-child{border-right:1px solid #ffffff08;border-radius:0 12px 12px 0}
+.toolGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.toolBox{padding:16px;border:1px solid var(--line);border-radius:18px;background:#ffffff04}.toolBox h4{margin:0 0 6px}.toolBox p{margin:0 0 12px;color:#999;font-size:12px;line-height:1.5}
+.mediaGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.mediaItem{aspect-ratio:1;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#ffffff05;position:relative}.mediaItem img{width:100%;height:100%;object-fit:cover}.mediaItem .mediaOverlay{position:absolute;left:8px;right:8px;bottom:8px;padding:7px 9px;border-radius:10px;background:#0009;font-size:11px}
+.chipRow{display:flex;gap:7px;flex-wrap:wrap}.chip{padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:#ffffff05;color:#ccc;font-size:12px}
+.toast2{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:99999;padding:12px 16px;border-radius:14px;background:#17171f;border:1px solid #ffffff18;box-shadow:0 20px 50px #0008;color:#fff;transition:.25s;font-size:13px}.toast2.show{opacity:1;transform:translate(-50%,0)}
+.sheet{position:fixed;inset:0;background:#0009;backdrop-filter:blur(8px);z-index:9998;display:none;align-items:flex-end}.sheet.show{display:flex}.sheetBox{width:100%;padding:18px 14px calc(18px + env(safe-area-inset-bottom));background:#111117;border:1px solid #ffffff12;border-radius:26px 26px 0 0;box-shadow:0 -30px 80px #0009;animation:rise .25s ease}.sheetGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.sheetGrid button{min-height:62px;border:1px solid #ffffff0e;border-radius:15px;background:#ffffff06;color:#fff}.sheetGrid button span{display:block;font-size:10px;color:#aaa;margin-top:4px}
+@media(max-width:1050px){.kpiGrid{grid-template-columns:repeat(2,1fr)}.actionGrid{grid-template-columns:1fr 1fr}.mediaGrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.nav{overflow:visible;max-height:none}.nav button:nth-child(n+7){display:none}.nav .moreMobile{display:flex!important}.kpiGrid{grid-template-columns:1fr 1fr}.actionGrid{grid-template-columns:1fr}.toolGrid{grid-template-columns:1fr}.mediaGrid{grid-template-columns:repeat(2,1fr)}.table{font-size:11px}.table th:nth-child(3),.table td:nth-child(3){display:none}}
+
+/* ===== iPhone-first clean app shell ===== */
+.iosBottomNav{display:none}
+@media(max-width:900px){
+  body{padding-bottom:calc(88px + env(safe-area-inset-bottom));}
+  .app{display:block;min-height:100svh}
+  .sidebar{display:none!important}
+  .main{max-width:680px!important;width:100%;margin:0 auto;padding:14px 14px 20px!important}
+  .top{position:sticky;top:10px;z-index:50;margin-bottom:14px;padding:10px 4px;border-radius:20px;background:rgba(7,7,11,.72);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+  .eyebrow{font-size:9px;letter-spacing:1.5px}.title{font-size:22px;margin-top:2px}
+  .top .actions{gap:6px}.top .actions .btn:first-child{display:none}.top .actions .btn{min-height:42px;padding:9px 12px}
+  .grid2{grid-template-columns:1fr}.stats,.kpiGrid{grid-template-columns:repeat(2,1fr)}
+  .card{border-radius:20px;padding:16px;margin-bottom:12px}
+  .section{padding:0!important}
+  .previewPanel{display:none!important}
+  .preview-wrap{display:block!important}
+  .phone{max-width:430px;width:100%;margin:0 auto}
+  .actionGrid{grid-template-columns:1fr 1fr}.toolGrid{grid-template-columns:1fr 1fr}.mediaGrid{grid-template-columns:repeat(2,1fr)}
+  .iosBottomNav{position:fixed;display:grid;grid-template-columns:repeat(5,1fr);left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));height:70px;padding:6px;z-index:10000;border:1px solid rgba(255,255,255,.12);border-radius:24px;background:rgba(17,17,23,.88);backdrop-filter:blur(28px) saturate(1.4);-webkit-backdrop-filter:blur(28px) saturate(1.4);box-shadow:0 20px 55px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03);}
+  .iosBottomNav button{position:relative;border:0;background:transparent;color:#8d8d9b;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .2s,background .2s,color .2s}
+  .iosBottomNav button span{font-size:22px;line-height:24px;font-weight:700}.iosBottomNav button b{font-size:9px;font-weight:700}
+  .iosBottomNav button:active{transform:scale(.88)}
+  .iosBottomNav button.active{color:#fff;background:linear-gradient(135deg,rgba(168,85,247,.22),rgba(236,72,153,.13));box-shadow:inset 0 0 0 1px rgba(255,255,255,.06),0 8px 20px rgba(168,85,247,.12)}
+  .iosBottomNav button.active span{color:var(--accent);filter:drop-shadow(0 0 8px var(--accent))}
+  .iosBottomNav button.active:after{content:"";position:absolute;width:5px;height:5px;border-radius:50%;bottom:4px;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:iosNavPulse 1.8s ease-in-out infinite}
+  @keyframes iosNavPulse{50%{transform:scale(1.7);opacity:.45}}
+  .sheet{z-index:11000}.sheetBox{padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+}
+@media(min-width:901px){.main{max-width:820px!important}.previewPanel{display:none!important}.app{grid-template-columns:250px minmax(0,1fr)} }
+@media(max-width:520px){.main{padding-left:10px!important;padding-right:10px!important}.actionGrid,.toolGrid{grid-template-columns:1fr}.stats,.kpiGrid{gap:8px}.stat,.kpi{padding:13px}.stat b,.kpi b{font-size:20px}.title{font-size:20px}.card{padding:14px}.btn{min-height:44px!important}.linkrow{padding:9px}.linkrow .mini{padding:8px}.iosBottomNav{left:8px;right:8px;border-radius:22px}}
+
+/* ===== BIOSPACE HACKER / CYBERPUNK MOTION SYSTEM ===== */
+body{background:#050508;}
+body:after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,transparent,#000 12%,#000 88%,transparent)}
+body:before{box-shadow:0 0 90px var(--accent),0 0 180px color-mix(in srgb,var(--accent) 45%,transparent)}
+.app{position:relative;isolation:isolate}
+.app:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.018) 4px,transparent 5px);mix-blend-mode:screen;animation:scanMove 9s linear infinite}
+@keyframes scanMove{to{transform:translateY(18px)}}
+.glass{box-shadow:0 0 0 1px rgba(255,255,255,.025),0 20px 70px rgba(0,0,0,.42),0 0 45px color-mix(in srgb,var(--accent) 7%,transparent);position:relative;overflow:hidden}
+.glass:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,transparent 15%,rgba(255,255,255,.05) 35%,transparent 55%);transform:translateX(-130%);animation:glassSweep 7s ease-in-out infinite}
+@keyframes glassSweep{0%,55%{transform:translateX(-130%)}75%,100%{transform:translateX(130%)}}
+.logo{position:relative;animation:logoPulse 2.8s ease-in-out infinite}
+.logo:after{content:"";position:absolute;inset:-5px;border-radius:15px;border:1px solid var(--accent);opacity:.5;animation:neonRing 2s ease-out infinite}
+@keyframes logoPulse{50%{transform:translateY(-2px) scale(1.04);filter:brightness(1.18)}}
+@keyframes neonRing{0%{transform:scale(.8);opacity:.8}100%{transform:scale(1.35);opacity:0}}
+.nav button{position:relative;overflow:hidden}.nav button:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(var(--accent),var(--accent2));transform:scaleY(0);transition:.25s}.nav button:hover:before,.nav button.active:before{transform:scaleY(1)}
+.nav button.active{box-shadow:inset 0 0 24px color-mix(in srgb,var(--accent) 10%,transparent),0 0 18px color-mix(in srgb,var(--accent) 8%,transparent)}
+.topbar{box-shadow:0 0 0 1px rgba(255,255,255,.04),0 15px 55px rgba(0,0,0,.4),0 0 35px color-mix(in srgb,var(--accent) 9%,transparent)}
+.topbar h1{letter-spacing:.02em;text-shadow:0 0 18px color-mix(in srgb,var(--accent) 30%,transparent);animation:headlineFlicker 5s infinite}
+@keyframes headlineFlicker{0%,94%,100%{opacity:1}95%{opacity:.7}96%{opacity:1}97%{opacity:.55}98%{opacity:1}}
+.btn{position:relative;overflow:hidden}.btn:after{content:"";position:absolute;top:-80%;left:-35%;width:25%;height:260%;background:rgba(255,255,255,.2);transform:rotate(20deg);transition:.5s}.btn:hover:after{left:120%}
+.primary{animation:buttonGlow 3s ease-in-out infinite}
+@keyframes buttonGlow{50%{box-shadow:0 12px 35px color-mix(in srgb,var(--accent) 38%,transparent),0 0 18px color-mix(in srgb,var(--accent2) 20%,transparent)}}
+.section.active{animation:cyberIn .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes cyberIn{0%{opacity:0;transform:translateY(14px) scale(.985);filter:blur(4px)}60%{filter:blur(0)}100%{opacity:1;transform:none}}
+.stat,.card,.linkrow,.kpi{transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease}.stat:hover,.card:hover,.linkrow:hover,.kpi:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 35%,var(--line));box-shadow:0 18px 55px rgba(0,0,0,.35),0 0 28px color-mix(in srgb,var(--accent) 9%,transparent)}
+.iphone{box-shadow:0 0 0 1px rgba(255,255,255,.08),0 35px 100px rgba(0,0,0,.65),0 0 60px color-mix(in srgb,var(--accent) 15%,transparent)!important}
+.linkrow{position:relative;overflow:hidden}.linkrow:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.055),transparent);transform:translateX(-110%);animation:rowScan 5s ease-in-out infinite}.linkrow:nth-child(2):before{animation-delay:.8s}.linkrow:nth-child(3):before{animation-delay:1.6s}.linkrow:nth-child(4):before{animation-delay:2.4s}@keyframes rowScan{0%,60%{transform:translateX(-110%)}78%,100%{transform:translateX(110%)}}
+/* floating cyber particles */
+#cyberCanvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;opacity:.58}
+.cyber-corner{position:fixed;pointer-events:none;z-index:9998;width:70px;height:70px;opacity:.5}.cyber-corner:before,.cyber-corner:after{content:"";position:absolute;background:var(--accent);box-shadow:0 0 12px var(--accent)}.cyber-corner:before{width:2px;height:42px}.cyber-corner:after{width:42px;height:2px}.cyber-tl{top:12px;left:12px}.cyber-tr{top:12px;right:12px;transform:scaleX(-1)}.cyber-bl{bottom:12px;left:12px;transform:scaleY(-1)}.cyber-br{bottom:12px;right:12px;transform:scale(-1)}
+@media(max-width:900px){body:after{background-size:28px 28px;opacity:.16}.cyber-corner{display:none}.glass:after{animation-duration:9s}.app{padding-top:8px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
+<canvas id="cyberCanvas" aria-hidden="true"></canvas>
+<div class="cyber-corner cyber-tl"></div><div class="cyber-corner cyber-tr"></div><div class="cyber-corner cyber-bl"></div><div class="cyber-corner cyber-br"></div>
 
 <div id="publicProfileRoot" aria-label="Public BioSpace profile">
   <div class="publicProfileCard">
@@ -258,11 +463,20 @@ body.public-profile-mode #publicProfileRoot{
 <aside class="sidebar">
   <div class="brand"><div class="logo">✦</div> BioSpace</div>
   <div class="nav">
-    <button class="active" data-page="profile">◉ <span>Profile</span></button>
+    <button class="active" data-page="overview">⌂ <span>Home</span></button>
+    <button data-page="profile">◉ <span>Profile</span></button>
     <button data-page="links">⌁ <span>Links</span></button>
-    <button data-page="design">✦ <span>Design Studio</span></button>
-    <button data-page="social">◎ <span>Social Icons</span></button>
-    <button data-page="analytics">⌁ <span>Analytics</span></button>
+    <button data-page="design">✦ <span>Design</span></button>
+    <button data-page="social">◎ <span>Social</span></button>
+    <button data-page="media">▣ <span>Media</span></button>
+    <button data-page="analytics">▥ <span>Analytics</span></button>
+    <button data-page="audience">◌ <span>Audience</span></button>
+    <button data-page="store">◇ <span>Store</span></button>
+    <button data-page="tools">⌘ <span>Tools</span></button>
+    <button data-page="seo">⌕ <span>SEO</span></button>
+    <button data-page="notifications">🔔 <span>Alerts</span></button>
+    <button data-page="settings">⚙ <span>Settings</span></button>
+    <button class="moreMobile" id="moreMobileBtn">☷ <span>More</span></button>
   </div>
   <div class="sidebottom">
     <small style="color:#999">LIVE PREVIEW</small>
@@ -277,11 +491,38 @@ body.public-profile-mode #publicProfileRoot{
     <div class="actions"><button class="btn" id="resetBtn">Reset</button><button class="btn primary" id="shareBtn">Share profile</button></div>
   </div>
 
-  <section class="section active" id="profile">
+  <section class="section active" id="overview">
+    <div class="stats">
+      <div class="stat"><b id="views">0</b><span>Profile views</span></div>
+      <div class="stat"><b id="clicks">0</b><span>Link clicks</span></div>
+      <div class="stat"><b id="linkCount">0</b><span>Links</span></div>
+      <div class="stat"><b id="followers">0</b><span>Followers</span></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Welcome to BioSpace ✨</h3>
+      <p style="color:#aaa;line-height:1.6">Create your public profile, add unlimited links, customize the design, save online, and share one profile URL that works on iPhone and desktop.</p>
+      <div class="grid2">
+        <button class="btn primary" id="goProfile" type="button">✎ Edit profile</button>
+        <button class="btn" id="goLinks" type="button">＋ Add link</button>
+      </div>
+      <div style="margin-top:14px;padding:13px;border-radius:15px;background:#ffffff05;border:1px solid #ffffff0b">
+        <small style="color:#999">Public profile URL</small>
+        <div id="publicUrlText" style="margin-top:6px;word-break:break-all;font-size:13px;color:#ddd">Save your profile to generate the public link.</div>
+      </div>
+      <div class="actionGrid" style="margin-top:14px">
+        <button class="actionCard" id="dashMedia"><span>🖼️</span><strong>Media gallery</strong><span>Manage creator images</span></button>
+        <button class="actionCard" id="dashStore"><span>◇</span><strong>Creator store</strong><span>Add products & services</span></button>
+        <button class="actionCard" id="dashTools"><span>⌘</span><strong>Creator tools</strong><span>QR, backup & restore</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="profile">
     <div class="card">
       <h3>Profile identity</h3>
       <div class="grid2">
         <div class="field"><label>Display name</label><input class="input" id="name" value="Mofaarah"></div>
+        <button class="btn primary" id="saveProfileBtn" type="button">💾 Save profile</button>
         <div class="field"><label>Username</label><input class="input" id="username" value="mofaarah"></div>
       </div>
       <div class="field"><label>Bio</label><textarea class="textarea" id="bio">Creator • Video Editor • Music</textarea></div>
@@ -289,12 +530,6 @@ body.public-profile-mode #publicProfileRoot{
         <div class="field"><label>Profile photo</label><input class="input" id="avatar" type="file" accept="image/*"></div>
         <div class="field"><label>Profile layout</label><select class="select" id="layout"><option value="center">Centered</option><option value="compact">Compact</option><option value="minimal">Minimal</option></select></div>
       </div>
-    </div>
-    <div class="card">
-      <h3>Quick appearance</h3>
-      <div class="switchrow"><span>Animated profile</span><div class="switch on" data-switch="animation"><i></i></div></div>
-      <div class="switchrow"><span>Glass links</span><div class="switch on" data-switch="glass"><i></i></div></div>
-      <div class="switchrow"><span>Show footer</span><div class="switch on" data-switch="footer"><i></i></div></div>
     </div>
   </section>
 
@@ -347,27 +582,77 @@ body.public-profile-mode #publicProfileRoot{
     </div>
   </section>
 
+  <section class="section" id="settings">
+    <div class="card">
+      <h3>Settings</h3>
+      <div class="switchrow"><span>Animated profile</span><div class="switch on" data-switch="animation"><i></i></div></div>
+      <div class="switchrow"><span>Glass links</span><div class="switch on" data-switch="glass"><i></i></div></div>
+      <div class="switchrow"><span>Show footer</span><div class="switch on" data-switch="footer"><i></i></div></div>
+    </div>
+    <div class="card">
+      <h3>Profile link</h3>
+      <button class="btn primary" id="copyPublicUrl" type="button">↗ Copy public link</button>
+      <button class="btn" id="openPublicUrl" type="button" style="margin-left:6px">Open profile</button><button class="btn" id="syncNow" type="button" style="margin-left:6px">☁ Sync now</button><p id="syncText" style="color:#888;font-size:12px;margin:12px 0 0">Your creator data can be saved online and opened on other devices.</p>
+    </div>
+  </section>
+
   <section class="section" id="analytics">
     <div class="stats">
-      <div class="stat"><b id="views">12.8K</b><span>Profile views</span></div>
-      <div class="stat"><b id="clicks">4.7K</b><span>Link clicks</span></div>
-      <div class="stat"><b id="followers">1.2K</b><span>Followers</span></div>
+      <div class="stat"><b id="analyticsViews">12.8K</b><span>Profile views</span></div>
+      <div class="stat"><b id="analyticsClicks">4.7K</b><span>Link clicks</span></div>
+      <div class="stat"><b id="analyticsFollowers">1.2K</b><span>Followers</span></div>
     </div>
     <div class="card" style="margin-top:16px">
-      <h3>Last 7 days</h3>
-      <div style="height:180px;display:flex;align-items:end;gap:10px;padding-top:20px">
-        <div style="height:38%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
-        <div style="height:57%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
-        <div style="height:45%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
-        <div style="height:78%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
-        <div style="height:62%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
-        <div style="height:90%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
-        <div style="height:70%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px"></div>
-      </div>
+      <h3>Last 7 days</h3><div id="analyticsBars" style="height:180px;display:flex;align-items:end;gap:10px;padding-top:20px"></div>
+      <div id="analyticsLabels" style="display:flex;justify-content:space-between;color:#777;font-size:10px;margin-top:7px"></div>
     </div>
+    <div class="card"><h3>Top links</h3><div style="overflow:auto"><table class="table"><thead><tr><th>Link</th><th>Clicks</th><th>URL</th></tr></thead><tbody id="topLinksTable"></tbody></table></div></div>
   </section>
 </main>
 
+
+  <section class="section" id="media">
+    <div class="card"><h3>Media Gallery 🖼️</h3><p style="color:#999">Upload images and keep a creator media library for your profile.</p>
+      <div class="grid2"><div class="field"><label>Upload image</label><input class="input" id="mediaInput" type="file" accept="image/*"></div><div class="field"><label>Caption</label><input class="input" id="mediaCaption" placeholder="My latest edit"></div></div>
+      <button class="btn primary" id="addMedia">＋ Add media</button>
+      <div class="mediaGrid" id="mediaGrid" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section class="section" id="audience">
+    <div class="kpiGrid"><div class="kpi"><b id="audTotal">0</b><small>Total followers</small></div><div class="kpi"><b id="audGrowth">+0%</b><small>30-day growth</small></div><div class="kpi"><b id="audTop">Germany</b><small>Top location</small></div><div class="kpi"><b id="audDevice">iPhone</b><small>Top device</small></div></div>
+    <div class="card" style="margin-top:16px"><h3>Audience notes</h3><div class="chipRow" id="audChips"></div><div class="field"><label>Follower count</label><input class="input" id="followerInput" type="number" min="0" value="0"></div><div class="field" style="margin-top:14px"><label>Creator note</label><textarea class="textarea" id="audNote" placeholder="Write a private note about your audience..."></textarea></div><button class="btn primary" id="saveAudience">Save audience settings</button></div>
+  </section>
+
+  <section class="section" id="store">
+    <div class="card"><h3>Creator Store 🛍️</h3><p style="color:#999">Create simple products, services, presets or digital downloads.</p>
+      <div class="grid2"><div class="field"><label>Product name</label><input class="input" id="productName" placeholder="After Effects Preset Pack"></div><div class="field"><label>Price (€)</label><input class="input" id="productPrice" type="number" min="0" step="0.01" placeholder="9.99"></div></div>
+      <div class="field"><label>Product link</label><input class="input" id="productUrl" placeholder="https://example.com/buy"></div><button class="btn primary" id="addProduct">＋ Add product</button>
+      <div id="productList" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section class="section" id="tools">
+    <div class="card"><h3>Creator Tools 🧰</h3><div class="toolGrid">
+      <div class="toolBox"><h4>QR Code</h4><p>Generate a QR image for your public BioSpace profile.</p><button class="btn primary" id="makeQr">Generate QR</button><div id="qrBox" style="margin-top:12px;text-align:center"></div></div>
+      <div class="toolBox"><h4>Backup</h4><p>Export your full BioSpace data to a JSON file.</p><button class="btn" id="exportData">Export JSON</button></div>
+      <div class="toolBox"><h4>Restore</h4><p>Import a previous JSON backup and restore your studio.</p><input id="importData" type="file" accept="application/json" class="input"><button class="btn" id="restoreData" style="margin-top:8px">Restore backup</button></div>
+      <div class="toolBox"><h4>Profile URL</h4><p>Copy or open the public profile URL from any device.</p><button class="btn" id="toolCopyUrl">Copy URL</button></div>
+    </div></div>
+  </section>
+
+  <section class="section" id="seo">
+    <div class="card"><h3>SEO & Discovery 🔎</h3><p style="color:#999">Prepare your public page for search and sharing.</p>
+      <div class="field"><label>Page title</label><input class="input" id="seoTitle" placeholder="Mofaarah — Creator"></div>
+      <div class="field"><label>Meta description</label><textarea class="textarea" id="seoDesc" placeholder="Creator, video editor and music. Find everything here."></textarea></div>
+      <div class="grid2"><div class="field"><label>Keywords</label><input class="input" id="seoKeywords" placeholder="creator, editor, music"></div><div class="field"><label>Language</label><select class="select" id="seoLang"><option value="en">English</option><option value="so">Somali</option><option value="de">German</option></select></div></div>
+      <button class="btn primary" id="saveSeo">Save SEO settings</button>
+    </div>
+  </section>
+
+  <section class="section" id="notifications">
+    <div class="card"><h3>Notifications 🔔</h3><div class="switchrow"><span>New link clicks</span><div class="switch on prefSwitch" data-pref="clickAlerts"><i></i></div></div><div class="switchrow"><span>Weekly analytics summary</span><div class="switch on prefSwitch" data-pref="weeklySummary"><i></i></div></div><div class="switchrow"><span>New follower alerts</span><div class="switch on prefSwitch" data-pref="followerAlerts"><i></i></div></div><button class="btn primary" id="testNotification" style="margin-top:14px">Send test notification</button></div>
+  </section>
 <aside class="previewPanel">
   <div class="previewHead"><strong>iPhone Live Preview</strong><select class="deviceSelect" id="device"><option>iPhone 15 Pro Max</option><option>iPhone 14 Pro</option><option>iPhone 13</option></select></div>
   <div class="iphone" id="iphone">
@@ -390,21 +675,47 @@ body.public-profile-mode #publicProfileRoot{
 </aside>
 </div>
 
+
+<nav class="iosBottomNav" id="iosBottomNav" aria-label="Main navigation">
+  <button class="active" data-page="overview"><span>⌂</span><b>Home</b></button>
+  <button data-page="profile"><span>◉</span><b>Profile</b></button>
+  <button data-page="links"><span>↗</span><b>Links</b></button>
+  <button data-page="design"><span>✦</span><b>Design</b></button>
+  <button id="iosMoreBtn"><span>☷</span><b>More</b></button>
+</nav>
+
+<div class="sheet" id="moreSheet"><div class="sheetBox"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><strong>More BioSpace</strong><button class="btn" id="closeMore">Close</button></div><div class="sheetGrid">
+<button data-more="social">◎<span>Social</span></button><button data-more="media">▣<span>Media</span></button><button data-more="analytics">▥<span>Analytics</span></button><button data-more="audience">◌<span>Audience</span></button><button data-more="store">◇<span>Store</span></button><button data-more="tools">⌘<span>Tools</span></button><button data-more="seo">⌕<span>SEO</span></button><button data-more="notifications">🔔<span>Alerts</span></button><button data-more="settings">⚙<span>Settings</span></button></div></div></div>
+<div class="toast2" id="toast2"></div>
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const saved=JSON.parse(localStorage.getItem("biospace_iphone_studio")||"null");
-const state=saved||{animation:true,glass:true,footer:true,links:[
+const state=saved||{animation:true,glass:true,footer:true,socialIcons:["◎","♪","▶","♢","✦"],name:"Mofaarah",username:"mofaarah",bio:"Creator • Video Editor • Music",avatar:"",accent:"#a855f7",accent2:"#ec4899",bg:"#07070b",links:[
  {title:"TikTok",desc:"Follow me on TikTok",icon:"♪",url:"https://www.tiktok.com/",image:""},
  {title:"Instagram",desc:"My latest photos",icon:"◎",url:"https://www.instagram.com/",image:""},
  {title:"YouTube",desc:"Watch my videos",icon:"▶",url:"https://www.youtube.com/",image:""},
  {title:"Snapchat",desc:"Add me on Snapchat",icon:"👻",url:"https://www.snapchat.com/",image:""},
  {title:"Discord",desc:"Join my community",icon:"◇",url:"https://discord.com/",image:""}
-]};
+],media:[],products:[],audienceNote:"",seo:{title:"",desc:"",keywords:"",lang:"en"},prefs:{clickAlerts:true,weeklySummary:true,followerAlerts:true},daily:{},followers:0};
+Object.assign(state,{media:Array.isArray(state.media)?state.media:[],products:Array.isArray(state.products)?state.products:[],audienceNote:state.audienceNote||"",seo:state.seo||{title:"",desc:"",keywords:"",lang:"en"},prefs:Object.assign({clickAlerts:true,weeklySummary:true,followerAlerts:true},state.prefs||{}),daily:state.daily||{},followers:Number(state.followers||0)});
+function megaToast(message){const t=$("#toast2");if(!t)return;t.textContent=message;t.classList.add("show");clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove("show"),2200)}
+function renderExtra(){
+  const mg=$("#mediaGrid"); if(mg){mg.innerHTML=state.media.length?state.media.map((m,i)=>`<div class="mediaItem"><img src="${escapeHtml(m.image)}" alt=""><div class="mediaOverlay">${escapeHtml(m.caption||"Media")} · <button data-media-del="${i}" style="background:none;border:0;color:#fff;float:right">×</button></div></div>`).join(""):'<div class="empty" style="grid-column:1/-1">No media yet. Upload your first image.</div>';mg.querySelectorAll('[data-media-del]').forEach(b=>b.onclick=()=>{state.media.splice(Number(b.dataset.mediaDel),1);saveState();renderExtra();megaToast("Media removed")});}
+  const pl=$("#productList"); if(pl){pl.innerHTML=state.products.length?state.products.map((x,i)=>`<div class="linkrow"><div class="linkicon">◇</div><div class="linkinfo"><strong>${escapeHtml(x.name)}</strong><small>€${Number(x.price||0).toFixed(2)} · ${escapeHtml(x.url||"No checkout link")}</small></div><button class="mini open" data-prod-open="${i}">Open</button><button class="mini del" data-prod-del="${i}">Delete</button></div>`).join(""):'<div class="empty">No products yet.</div>';pl.querySelectorAll('[data-prod-open]').forEach(b=>b.onclick=()=>openLink(state.products[Number(b.dataset.prodOpen)].url));pl.querySelectorAll('[data-prod-del]').forEach(b=>b.onclick=()=>{state.products.splice(Number(b.dataset.prodDel),1);saveState();renderExtra();megaToast("Product deleted")});}
+  const note=$("#audNote");if(note)note.value=state.audienceNote||"";if($("#followerInput"))$("#followerInput").value=state.followers||0;const chips=$("#audChips");if(chips)chips.innerHTML=['Video editing','Music','Creator','Gaming','Lifestyle'].map(x=>`<span class="chip">${x}</span>`).join("");
+  if($("#audTotal"))$("#audTotal").textContent=state.followers||0;
+  const ab=$("#analyticsBars"), al=$("#analyticsLabels"); if(ab){const days=[];for(let i=6;i>=0;i--){const d=new Date(Date.now()-i*86400000);days.push(d.toISOString().slice(0,10));}const vals=days.map(d=>(state.daily[d]?.views||0)+(state.daily[d]?.clicks||0));const max=Math.max(1,...vals);ab.innerHTML=vals.map((v,i)=>`<div title="${days[i]}: ${v}" style="height:${Math.max(8,(v/max)*100)}%;flex:1;background:linear-gradient(var(--accent),#ffffff08);border-radius:9px 9px 4px 4px;min-width:10px"></div>`).join("");if(al)al.innerHTML=days.map(d=>`<span>${d.slice(5)}</span>`).join("");}
+  const tl=$("#topLinksTable");if(tl){const rows=state.links.map((l,i)=>({l,i,c:(state.clicks&&state.links.length)?Math.floor(state.clicks/state.links.length)+(i===0?1:0):0})).sort((a,b)=>b.c-a.c);tl.innerHTML=rows.length?rows.map(x=>`<tr><td>${escapeHtml(x.l.title)}</td><td>${x.c}</td><td>${escapeHtml(x.l.url)}</td></tr>`).join(""):'<tr><td colspan="3">No links yet</td></tr>';}
+  if($("#seoTitle")){$("#seoTitle").value=state.seo.title||"";$("#seoDesc").value=state.seo.desc||"";$("#seoKeywords").value=state.seo.keywords||"";$("#seoLang").value=state.seo.lang||"en"}
+  $$(".prefSwitch").forEach(sw=>sw.classList.toggle("on",state.prefs[sw.dataset.pref]!==false));
+}
 function render(){
  $("#pName").textContent=$("#name").value+" ✦";
  $("#pHandle").textContent="@"+$("#username").value.replace(/^@/,"");
  $("#pBio").textContent=$("#bio").value;
-const box=$("#profileLinks"); box.innerHTML="";
+const socialVals=Array.isArray(state.socialIcons)?state.socialIcons:["◎","♪","▶","♢","✦"];
+ $("#socials").innerHTML=socialVals.map(v=>`<div class="social">${escapeHtml(v)}</div>`).join("");
+ const box=$("#profileLinks"); box.innerHTML="";
  state.links.forEach((l,i)=>{
   const el=document.createElement("div");
   el.className="plink";
@@ -437,8 +748,14 @@ const box=$("#profileLinks"); box.innerHTML="";
  $("#pFooter").style.display=state.footer?"block":"none";
  document.body.classList.toggle("animate-off",!state.animation);
  $("#iphone").style.setProperty("--radius",$("#radius").value+"px");
+ renderExtra();
 }
-function saveState(){localStorage.setItem("biospace_iphone_studio",JSON.stringify(state));}
+function syncProfile(){
+ state.name=(document.querySelector("#name")?.value||state.name||"Mofaarah").trim()||"Mofaarah";
+ state.username=(document.querySelector("#username")?.value||state.username||"mofaarah").replace(/^@/,"").trim()||"mofaarah";
+ state.bio=document.querySelector("#bio")?.value ?? state.bio ?? "";
+}
+function saveState(){syncProfile();localStorage.setItem("biospace_iphone_studio",JSON.stringify(state));}
 function escapeHtml(value){
  return String(value ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
 }
@@ -477,6 +794,7 @@ function editLink(i){
  l.icon=icon.trim()||"✦";
  l.image=image.trim();
  saveState();
+ cloudSave(false);
  renderEditors();
  render();
 }
@@ -491,7 +809,7 @@ function showLinkMenu(i){
  else if(action==="3"){
    if(confirm(`Delete "${l.title}"?`)){
      state.links.splice(i,1);
-     saveState(); renderEditors(); render();
+     saveState(); cloudSave(false); renderEditors(); render();
    }
  }
 }
@@ -507,32 +825,61 @@ function renderEditors(){
   row.querySelector(".open").onclick=()=>openLink(l.url);
   row.querySelector(".del").onclick=()=>{
     if(confirm(`Delete "${l.title}"?`)){
-      state.links.splice(i,1);saveState();if(saved){
-  if(saved.name)$("#name").value=saved.name;
-  if(saved.username)$("#username").value=saved.username;
-  if(saved.bio)$("#bio").value=saved.bio;
-  if(saved.avatar)$("#pAvatar").innerHTML=`<img src="${saved.avatar}" alt="">`;
-  if(saved.animation!==undefined){state.animation=saved.animation;}
-  if(saved.footer!==undefined){state.footer=saved.footer;}
-}
-renderEditors();render();
+      state.links.splice(i,1);saveState();cloudSave(false);if(state.radius) $("#radius").value=state.radius;
+renderEditors();render();updatePublicUrlText();
     }
   };
   box.appendChild(row);
  });
 }
-$$(".nav button").forEach(b=>b.onclick=()=>{
- $$(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");
- $$(".section").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.page).classList.add("active");
- $("#pageTitle").textContent=b.textContent.trim();
-});
-["name","username","bio"].forEach(id=>$("#"+id).addEventListener("input",()=>{saveState();render()}));
+function navigate(page){
+  const target=document.getElementById(page)||document.getElementById("overview");
+  $$(".section").forEach(x=>x.classList.remove("active"));
+  target.classList.add("active");
+  $$(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===target.id));
+  $$("#iosBottomNav button[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===target.id));
+  const labels={overview:"Home",profile:"Profile",links:"Links",design:"Design",social:"Social",media:"Media",analytics:"Analytics",audience:"Audience",store:"Store",tools:"Tools",seo:"SEO",notifications:"Alerts",settings:"Settings"};
+  $("#pageTitle").textContent=labels[target.id]||"BioSpace";
+  window.scrollTo({top:0,behavior:"smooth"});
+  $("#moreSheet")?.classList.remove("show");
+}
+$$('.nav button').forEach(b=>b.onclick=()=>b.dataset.page?navigate(b.dataset.page):$("#moreSheet")?.classList.add("show"));
+$$('#iosBottomNav button[data-page]').forEach(b=>b.onclick=()=>navigate(b.dataset.page));
+$("#iosMoreBtn")?.addEventListener("click",()=>$("#moreSheet")?.classList.add("show"));
+$("#closeMore")?.addEventListener("click",()=>$("#moreSheet").classList.remove("show"));
+$$("[data-more]").forEach(b=>b.onclick=()=>navigate(b.dataset.more));
+$("#moreSheet")?.addEventListener("click",e=>{if(e.target.id==="moreSheet")e.currentTarget.classList.remove("show")});
+["name","username","bio"].forEach(id=>$("#"+id).addEventListener("input",()=>{render()}));
+$("#saveProfileBtn").onclick=async()=>{
+  state.name=$("#name").value.trim()||"Mofaarah";
+  state.username=$("#username").value.trim().replace(/^@/,"").replace(/\s+/g,"-").toLowerCase()||"mofaarah";
+  state.bio=$("#bio").value.trim();
+  saveState();
+  const online=await cloudSave(true);
+  render(); updatePublicUrlText();
+  if(online) alert("Profile saved online successfully!\n\nNow the same profile link can be opened on iPhone and other devices.");
+};
+$("#name").value=state.name||"Mofaarah";$("#username").value=state.username||"mofaarah";$("#bio").value=state.bio||"";
+if(Array.isArray(state.socialIcons)) $$(".socialInput").forEach((x,i)=>x.value=state.socialIcons[i]||x.value);
 $("#avatar").addEventListener("change",e=>{
  const f=e.target.files[0];if(!f)return;const r=new FileReader();
- r.onload=()=>{$("#pAvatar").innerHTML=`<img src="${r.result}" alt="">`;state.avatar=r.result;saveState();render()};r.readAsDataURL(f);
+ r.onload=()=>{
+  const img=new Image();
+  img.onload=()=>{
+    const max=320, scale=Math.min(1,max/Math.max(img.width,img.height));
+    const c=document.createElement("canvas"); c.width=Math.max(1,Math.round(img.width*scale)); c.height=Math.max(1,Math.round(img.height*scale));
+    const ctx=c.getContext("2d"); ctx.drawImage(img,0,0,c.width,c.height);
+    let quality=0.72, compact=c.toDataURL("image/jpeg",quality);
+    while(compact.length>700000 && quality>0.35){ quality-=0.08; compact=c.toDataURL("image/jpeg",quality); }
+    $("#pAvatar").innerHTML=`<img src="${compact}" alt="">`;state.avatar=compact;saveState();
+    cloudSave(true).then(r=>{ if(r) setCloudStatus("✓ Photo saved online",true); });
+    render();
+  };
+  img.src=r.result;
+};r.readAsDataURL(f);
 });
 $$("[data-switch]").forEach(sw=>sw.onclick=()=>{
- sw.classList.toggle("on");const k=sw.dataset.switch;state[k]=sw.classList.contains("on");render();
+ sw.classList.toggle("on");const k=sw.dataset.switch;state[k]=sw.classList.contains("on");saveState();render();cloudSave(false);
 });
 $("#addLink").onclick=()=>{
  const title=prompt("Link name","New Link");if(!title)return;
@@ -543,116 +890,209 @@ $("#addLink").onclick=()=>{
  if(!url)return;
  const safe=normalizeUrl(url);
  if(!safe){alert("URL-ka sax ma aha.");return;}
- state.links.push({title,desc,icon,url:safe,image});saveState();renderEditors();render();
+ state.links.push({title,desc,icon,url:safe,image});saveState();cloudSave(false);if(state.radius) $("#radius").value=state.radius;
+renderEditors();render();updatePublicUrlText();
 };
 const themes={
  purple:["#a855f7","#ec4899"],ocean:["#06b6d4","#3b82f6"],lime:["#84cc16","#22c55e"],sunset:["#f97316","#ef4444"],ice:["#e0e7ff","#38bdf8"]
 };
 $$(".swatch").forEach(s=>s.onclick=()=>{const [a,b]=themes[s.dataset.theme];$("#accent").value=a;$("#accent2").value=b;applyColors(a,b)});
-function applyColors(a,b){document.documentElement.style.setProperty("--accent",a);document.documentElement.style.setProperty("--accent2",b);render()}
+function applyColors(a,b){state.accent=a;state.accent2=b;document.documentElement.style.setProperty("--accent",a);document.documentElement.style.setProperty("--accent2",b);saveState();cloudSave(false);render()}
 $("#accent").oninput=e=>applyColors(e.target.value,$("#accent2").value);
 $("#accent2").oninput=e=>applyColors($("#accent").value,e.target.value);
-$("#brightness").oninput=e=>{const n=Number(e.target.value);document.documentElement.style.setProperty("--preview-bg",`rgb(${Math.max(2,n/3)},${Math.max(2,n/3)},${Math.max(5,n)})`)};
-$("#radius").oninput=e=>{$$(".plink").forEach(x=>x.style.borderRadius=e.target.value+"px")};
+$("#brightness").oninput=e=>{const n=Number(e.target.value);const v=Math.max(5,n);state.bg=`rgb(${Math.round(v/3)},${Math.round(v/3)},${Math.round(v)})`;document.documentElement.style.setProperty("--preview-bg",state.bg);saveState()};
+$("#brightness").onchange=()=>cloudSave(false);
+$("#radius").oninput=e=>{state.radius=Number(e.target.value);saveState();$$(".plink").forEach(x=>x.style.borderRadius=e.target.value+"px")};
 $("#smallPhone").onclick=()=>{$("#iphone").classList.remove("large");$("#iphone").classList.add("small")};
 $("#largePhone").onclick=()=>{$("#iphone").classList.remove("small");$("#iphone").classList.add("large")};
 $("#device").onchange=e=>{$(".iphone").style.height=e.target.value.includes("15")?"750px":e.target.value.includes("14")?"735px":"700px"};
 $("#applySocial").onclick=()=>{
- const vals=$$(".socialInput").map(x=>x.value);$("#socials").innerHTML=vals.map(v=>`<div class="social">${v||"•"}</div>`).join("");
+ const vals=$$(".socialInput").map(x=>x.value.trim()||"•");
+ state.socialIcons=vals;saveState();render();cloudSave(false);
+ alert("Social icons saved.");
 };
-function publicProfileUrl(){
- const username=encodeURIComponent($("#username").value.replace(/^@/,"").trim()||"mofaarah");
- const base=window.location.href.split("?")[0].split("#")[0];
- return `${base}?profile=${username}`;
+const API_BASE = "";
+function setCloudStatus(message, ok=false){
+  let el=document.getElementById("cloudStatus");
+  if(!el){ el=document.createElement("div"); el.id="cloudStatus"; el.style.cssText="position:fixed;left:18px;bottom:18px;z-index:9999;padding:10px 13px;border-radius:12px;font-size:12px;background:#14141b;border:1px solid #2b2b35;color:#aaa;box-shadow:0 12px 35px #0008"; document.body.appendChild(el); }
+  el.textContent=message; el.style.color=ok?"#86efac":"#fca5a5";
+  clearTimeout(el._t); el._t=setTimeout(()=>el.remove(),4500);
 }
+function getCreatorToken(){
+  let token=localStorage.getItem("biospace_creator_token");
+  if(!token){
+    const bytes=new Uint8Array(24); crypto.getRandomValues(bytes);
+    token=Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
+    localStorage.setItem("biospace_creator_token",token);
+  }
+  return token;
+}
+function profilePayload(){
+  saveState();
+  return {
+    name:state.name||"Mofaarah",
+    username:(state.username||"mofaarah").replace(/^@/,""),
+    bio:state.bio||"",
+    avatar:state.avatar||"",
+    links:Array.isArray(state.links)?state.links.map(l=>({title:l.title||"Link",desc:l.desc||"",icon:l.icon||"✦",url:l.url||"",image:l.image||""})):[],
+    design:{accent:state.accent||"#8b5cf6",accent2:state.accent2||"#ec4899",bg:state.bg||"#07070b",socialIcons:Array.isArray(state.socialIcons)?state.socialIcons:[],media:Array.isArray(state.media)?state.media:[],products:Array.isArray(state.products)?state.products:[],audienceNote:state.audienceNote||"",seo:state.seo||{},prefs:state.prefs||{}}
+  };
+}
+async function cloudSave(showError=false){
+  const payload=profilePayload();
+  try{
+    const res=await fetch(`${API_BASE}/api/profile`,{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({token:getCreatorToken(),profile:payload})
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error||"Cloud save failed");
+    localStorage.setItem("biospace_cloud_username",payload.username);
+    return data;
+  }catch(err){
+    if(showError){ setCloudStatus("Online save failed: "+err.message,false); alert("Online save failed.\n\n"+err.message+"\n\nMake sure Supabase + Vercel are connected."); }
+    return null;
+  }
+}
+function publicProfileUrl(){
+  const username=encodeURIComponent((state.username||"mofaarah").replace(/^@/,""));
+  return `${window.location.origin}${window.location.pathname}?profile=${username}`;
+}
+$("#previewBtn")?.addEventListener("click",()=>{ state.views++; recordDaily("views"); saveState(); const url=publicProfileUrl(); window.open(url,"_blank","noopener,noreferrer"); });
 $("#shareBtn").onclick=async()=>{
- // Save the current Studio state, including all links, before sharing.
- saveState();
- const url=publicProfileUrl();
- try{
-   await navigator.clipboard.writeText(url);
-   alert("Profile link copied!\n\n"+url);
- }catch{
-   prompt("Copy your profile link:",url);
- }
+  saveState();
+  const url=publicProfileUrl();
+  const saved=await cloudSave(false);
+  const title=`${state.name||"BioSpace"} — BioSpace`;
+  const text=state.bio||"My BioSpace profile";
+  try{
+    if(navigator.share){
+      await navigator.share({title,text,url});
+      setCloudStatus(saved?"✓ Profile saved + shared":"⚠ Shared link — online save needs Vercel/Supabase",!!saved);
+      return;
+    }
+  }catch(err){
+    if(err?.name==="AbortError") return;
+  }
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(url);
+      setCloudStatus(saved?"✓ Public link copied":"⚠ Link copied — online save needs Vercel/Supabase",!!saved);
+      alert((saved?"Profile link copied!":"Link copied, but online save is not connected yet.")+"\n\n"+url);
+      return;
+    }
+  }catch{}
+  const ta=document.createElement("textarea");
+  ta.value=url;ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.focus();ta.select();
+  let copied=false;try{copied=document.execCommand("copy")}catch{}
+  ta.remove();
+  if(copied){setCloudStatus(saved?"✓ Public link copied":"⚠ Link copied — connect Vercel/Supabase",!!saved);alert("Public profile link copied!\n\n"+url);}
+  else prompt("Copy your public profile link:",url);
 };
 
-function publicMode(){
+async function loadPublicProfile(username){
+  try{
+    const res=await fetch(`${API_BASE}/api/profile?username=${encodeURIComponent(username)}`,{cache:"no-store"});
+    if(!res.ok) return null;
+    return await res.json();
+  }catch{return null}
+}
+function updatePublicUrlText(){
+ const el=$("#publicUrlText"); if(el) el.textContent=publicProfileUrl();
+}
+$("#goProfile")?.addEventListener("click",()=>navigate("profile"));
+$("#goLinks")?.addEventListener("click",()=>{navigate("links");setTimeout(()=>$("#addLink")?.click(),50)});
+$("#copyPublicUrl")?.addEventListener("click",async()=>{
+ saveState(); const ok=await cloudSave(true); if(!ok)return; const url=publicProfileUrl();
+ try{await navigator.clipboard.writeText(url);alert("Public profile link copied!\n\n"+url)}catch{prompt("Copy your public profile link:",url)}
+});
+$("#openPublicUrl")?.addEventListener("click",async()=>{saveState();const ok=await cloudSave(true);if(ok)window.open(publicProfileUrl(),"_blank","noopener,noreferrer")});
+
+/* Cyber particle field: lightweight, decorative, no external library. */
+(function cyberParticles(){
+ const c=document.getElementById("cyberCanvas"); if(!c) return;
+ const ctx=c.getContext("2d"); let w=0,h=0,dpr=1,pts=[];
+ function resize(){dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;c.width=w*dpr;c.height=h*dpr;c.style.width=w+"px";c.style.height=h+"px";ctx.setTransform(dpr,0,0,dpr,0,0);const n=Math.min(90,Math.max(28,Math.floor(w*h/18000)));pts=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,r:Math.random()*1.5+.35,a:Math.random()*.55+.15}))}
+ function draw(){ctx.clearRect(0,0,w,h);const accent=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()||"#a855f7";for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=accent;ctx.globalAlpha=p.a;ctx.fill()}ctx.globalAlpha=.08;for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;if(d<9500){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=accent;ctx.lineWidth=.5;ctx.stroke()}}}ctx.globalAlpha=1;requestAnimationFrame(draw)}
+ addEventListener("resize",resize,{passive:true});resize();draw();
+})();
+async function publicMode(){
  const params=new URLSearchParams(window.location.search);
  if(!params.get("profile"))return;
-
  document.body.classList.add("public-profile-mode");
-
- const savedProfile=JSON.parse(localStorage.getItem("biospace_iphone_studio")||"null");
- if(!savedProfile)return;
-
- const name=savedProfile.name||"Mofaarah";
- const username=savedProfile.username||params.get("profile");
- const bio=savedProfile.bio||"";
- const defaultPublicLinks=[
-   {title:"TikTok",desc:"Follow me on TikTok",icon:"♪",url:"https://www.tiktok.com/",image:""},
-   {title:"Instagram",desc:"My latest photos",icon:"◎",url:"https://www.instagram.com/",image:""},
-   {title:"YouTube",desc:"Watch my videos",icon:"▶",url:"https://www.youtube.com/",image:""},
-   {title:"Snapchat",desc:"Add me on Snapchat",icon:"👻",url:"https://www.snapchat.com/",image:""},
-   {title:"Discord",desc:"Join my community",icon:"◇",url:"https://discord.com/",image:""}
- ];
- const links=(Array.isArray(savedProfile.links)&&savedProfile.links.length)
-   ? savedProfile.links
-   : defaultPublicLinks;
-
- $("#publicName").textContent=name+" ✦";
- $("#publicHandle").textContent="@"+String(username).replace(/^@/,"");
- $("#publicBio").textContent=bio;
-
- const avatar=$("#publicAvatar");
- if(savedProfile.avatar){
-   avatar.innerHTML=`<img src="${savedProfile.avatar}" alt="">`;
- }else{
-   avatar.textContent=(name.trim()[0]||"M").toUpperCase();
+ const root=document.querySelector("#publicProfileRoot");
+ root.innerHTML=`<div class="publicPhone"><div class="publicIsland"></div><div class="publicPhonebar"><span id="publicTime">9:41</span><span>● ● ▮</span></div><div class="publicScreen"><div class="publicProfileCard"><div class="publicAvatar" id="publicAvatar">M</div><div class="publicName" id="publicName">Loading…</div><div class="publicHandle" id="publicHandle"></div><div class="publicBio" id="publicBio"></div><div class="publicSocials" id="publicSocials"></div><div class="publicLinks" id="publicLinks"></div><div class="publicFooter">BioSpace • Everything about you.</div></div></div></div>`;
+ const username=String(params.get("profile")||"").replace(/^@/,"").trim().toLowerCase();
+ const savedProfile=await loadPublicProfile(username);
+ if(!savedProfile){
+   root.innerHTML=`<div style="min-height:100svh;display:grid;place-items:center;background:#07070b;color:#fff;font-family:system-ui;padding:24px;text-align:center"><div><div style="font-size:42px">🔗</div><h2>Profile not found</h2><p style="color:#aaa;max-width:320px">Profile-kan lama kaydin online. Creator-ka ha gujiyo “Share profile” kadib marka uu Save sameeyo.</p></div></div>`;
+   return;
  }
-
- const socials=$("#publicSocials");
- socials.innerHTML="";
- const socialItems=[
-   {icon:"◎",label:"Instagram",url:"https://www.instagram.com/"},
-   {icon:"♪",label:"TikTok",url:"https://www.tiktok.com/"},
-   {icon:"▶",label:"YouTube",url:"https://www.youtube.com/"},
-   {icon:"◇",label:"Discord",url:"https://discord.com/"},
-   {icon:"✦",label:"Website",url:"https://www.google.com/"}
- ];
- socialItems.forEach(item=>{
-   const b=document.createElement("a");
-   b.className="publicSocial";
-   b.href=item.url;
-   b.target="_blank";
-   b.rel="noopener noreferrer";
-   b.title=item.label;
-   b.setAttribute("aria-label",item.label);
-   b.textContent=item.icon;
-   socials.appendChild(b);
+ const design=savedProfile.design||{};
+ document.documentElement.style.setProperty("--public-accent",design.accent||"#a855f7");
+ document.documentElement.style.setProperty("--public-accent2",design.accent2||"#ec4899");
+ document.documentElement.style.setProperty("--public-bg",design.bg||"#07070b");
+ const name=savedProfile.name||"Mofaarah";
+ const user=savedProfile.username||username;
+ const bio=savedProfile.bio||"";
+ const links=Array.isArray(savedProfile.links)?savedProfile.links:[];
+ $("#publicName").textContent=name+" ✦";
+ $("#publicHandle").textContent="@"+String(user).replace(/^@/,"");
+ $("#publicBio").textContent=bio;
+ const avatar=$("#publicAvatar");
+ if(savedProfile.avatar) avatar.innerHTML=`<img src="${escapeHtml(savedProfile.avatar)}" alt="${escapeHtml(name)}">`;
+ else avatar.textContent=(name.trim()[0]||"M").toUpperCase();
+ const socials=$("#publicSocials"); socials.innerHTML="";
+ // Show the creator's actual saved links as social shortcuts instead of hardcoded accounts.
+ links.slice(0,6).forEach(l=>{
+   const b=document.createElement("a"); b.className="publicSocial"; b.href=normalizeUrl(l.url)||"#"; b.target="_blank"; b.rel="noopener noreferrer"; b.title=l.title||"Link"; b.setAttribute("aria-label",l.title||"Link"); b.textContent=l.icon||"✦"; socials.appendChild(b);
  });
-
- const box=$("#publicLinks");
- box.innerHTML="";
+ const box=$("#publicLinks"); box.innerHTML="";
  links.forEach(l=>{
-   const a=document.createElement("a");
-   a.className="publicLink";
-   a.href=normalizeUrl(l.url)||"#";
-   a.target="_blank";
-   a.rel="noopener noreferrer";
-   a.innerHTML=`
-     <div class="publicLinkPic">${l.image?`<img src="${escapeHtml(l.image)}" alt="">`:escapeHtml(l.icon||"✦")}</div>
-     <div class="publicLinkCopy">
-       <strong>${escapeHtml(l.title||"Untitled Link")}</strong>
-       <small>${escapeHtml(l.desc||"")}</small>
-     </div>
-     <div class="publicDots">•••</div>`;
+   const safe=normalizeUrl(l.url);
+   if(!safe)return;
+   const a=document.createElement("a"); a.className="publicLink"; a.href=safe; a.target="_blank"; a.rel="noopener noreferrer";
+   a.innerHTML=`<div class="publicLinkPic">${l.image?`<img src="${escapeHtml(l.image)}" alt="">`:escapeHtml(l.icon||"✦")}</div><div class="publicLinkCopy"><strong>${escapeHtml(l.title||"Untitled Link")}</strong><small>${escapeHtml(l.desc||safe)}</small></div><div class="publicDots">•••</div>`;
    box.appendChild(a);
  });
+ if(!links.length) box.innerHTML='<div style="color:#aaa;padding:20px">No links added yet.</div>';
+ const extra=savedProfile.design||{};
+ if(Array.isArray(extra.products)&&extra.products.length){
+   const products=document.createElement("div");products.style.cssText="display:grid;gap:9px;margin-top:14px";
+   products.innerHTML='<div style="font-size:12px;color:#999;margin:4px 0">CREATOR STORE</div>'+extra.products.map(x=>`<a href="${normalizeUrl(x.url)||'#'}" target="_blank" rel="noopener noreferrer" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:15px;background:#ffffff0b;border:1px solid #ffffff12;color:#fff;text-decoration:none"><span>${escapeHtml(x.name||"Product")}</span><b>€${Number(x.price||0).toFixed(2)} ↗</b></a>`).join("");
+   box.parentElement.appendChild(products);
+ }
 }
+
+
+// ===== Mega Studio actions =====
+$("#dashMedia")?.addEventListener("click",()=>navigate("media"));
+$("#dashStore")?.addEventListener("click",()=>navigate("store"));
+$("#dashTools")?.addEventListener("click",()=>navigate("tools"));
+$("#addMedia")?.addEventListener("click",()=>{const f=$("#mediaInput")?.files?.[0];if(!f){megaToast("Choose an image first");return}const r=new FileReader();r.onload=()=>{state.media.unshift({image:r.result,caption:$("#mediaCaption").value.trim()||"Creator media",created:new Date().toISOString()});saveState();cloudSave(false);$("#mediaInput").value="";$("#mediaCaption").value="";megaToast("Media added")};r.readAsDataURL(f)});
+$("#saveAudience")?.addEventListener("click",()=>{state.audienceNote=$("#audNote").value.trim();state.followers=Math.max(0,Number($("#followerInput").value||0));saveState();render();megaToast("Audience settings saved")});
+$("#addProduct")?.addEventListener("click",()=>{const name=$("#productName").value.trim(),price=Number($("#productPrice").value||0),url=normalizeUrl($("#productUrl").value.trim());if(!name||!url){megaToast("Enter product name and valid URL");return}state.products.push({name,price,url});saveState();cloudSave(false);$("#productName").value="";$("#productPrice").value="";$("#productUrl").value="";megaToast("Product added")});
+$("#makeQr")?.addEventListener("click",()=>{const url=publicProfileUrl();$("#qrBox").innerHTML=`<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(url)}" alt="QR Code" style="width:220px;height:220px;border-radius:16px;background:#fff;padding:8px"><div style="font-size:11px;color:#888;margin-top:7px">${escapeHtml(url)}</div>`;megaToast("QR code generated")});
+$("#exportData")?.addEventListener("click",()=>{saveState();const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`biospace-${state.username||"profile"}-backup.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);megaToast("Backup exported")});
+$("#restoreData")?.addEventListener("click",()=>{const f=$("#importData")?.files?.[0];if(!f){megaToast("Choose a JSON backup first");return}const r=new FileReader();r.onload=()=>{try{const incoming=JSON.parse(r.result);Object.keys(incoming).forEach(k=>state[k]=incoming[k]);saveState();renderEditors();render();updatePublicUrlText();megaToast("Backup restored")}catch{megaToast("Invalid backup file")}};r.readAsText(f)});
+$("#toolCopyUrl")?.addEventListener("click",async()=>{const url=publicProfileUrl();try{await navigator.clipboard.writeText(url);megaToast("Public URL copied")}catch{prompt("Copy URL:",url)}});
+$("#syncNow")?.addEventListener("click",async()=>{saveState();const r=await cloudSave(true);$("#syncText").textContent=r?"✓ Synced online at "+new Date().toLocaleTimeString():"Online sync failed — check your Vercel/Supabase setup.";megaToast(r?"Everything synced online":"Sync failed")});
+$("#saveSeo")?.addEventListener("click",()=>{state.seo={title:$("#seoTitle").value.trim(),desc:$("#seoDesc").value.trim(),keywords:$("#seoKeywords").value.trim(),lang:$("#seoLang").value};saveState();cloudSave(false);megaToast("SEO settings saved")});
+$$(".prefSwitch").forEach(sw=>sw.addEventListener("click",()=>{state.prefs[sw.dataset.pref]=!state.prefs[sw.dataset.pref];saveState();renderExtra();megaToast("Notification preference updated")}));
+$("#testNotification")?.addEventListener("click",async()=>{if("Notification" in window){if(Notification.permission==="default")await Notification.requestPermission();if(Notification.permission==="granted")new Notification("BioSpace",{body:"Your creator notifications are working."})}megaToast("Test notification sent")});
+// Real local analytics event history
+function recordDaily(type){const d=new Date().toISOString().slice(0,10);state.daily[d]=state.daily[d]||{views:0,clicks:0};state.daily[d][type]=(state.daily[d][type]||0)+1;}
+window.trackClick=function(id){state.clicks++;recordDaily("clicks");saveState();$("#clicks").textContent=state.clicks;$("#analyticsClicks").textContent=state.clicks;cloudSave(false)};
 publicMode();
+(function updatePublicClock(){const el=document.getElementById("publicTime");if(el)el.textContent=new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});setTimeout(updatePublicClock,30000)})();
 $("#resetBtn").onclick=()=>{if(confirm("Reset this demo?")){localStorage.removeItem("biospace_iphone_studio");location.reload()}};
-renderEditors();render();
+if(state.accent) document.documentElement.style.setProperty("--accent",state.accent);
+if(state.accent2) document.documentElement.style.setProperty("--accent2",state.accent2);
+if(state.bg) document.documentElement.style.setProperty("--preview-bg",state.bg);
+if(state.radius) $("#radius").value=state.radius;
+renderEditors();render();updatePublicUrlText();
 </script>
+
+
 </body>
 </html>
